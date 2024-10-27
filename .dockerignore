@@ -1,0 +1,9 @@
+.venv
+.vscode
+__pycache__
+.dockerignore
+Dockerfile
+README.md
+README.Docker.md
+*.pyc
+*.tar
