@@ -5,6 +5,10 @@ from aiogram.types import TelegramObject
 
 
 class CustomI18nMiddleware(BaseMiddleware):
+    """
+    Промежуточный обработчик для интеграции интернационализации.
+    Позволяет добавить кастомную логику обработки данных перед тем, как они достигнут основного хендлера.
+    """
 
     async def __call__(
         self,
@@ -12,5 +16,13 @@ class CustomI18nMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any]
     ) -> Any:
+        """
+        Вызывается при каждом событии Telegram.
+        Передает данные в основной обработчик, предоставляя возможность предварительной обработки.
 
+        :param handler: Основной обработчик, который должен быть вызван.
+        :param event: Событие Telegram, которое нужно обработать.
+        :param data: Дополнительные данные, доступные обработчику.
+        :return: Результат работы основного обработчика.
+        """
         return await handler(event, data)

@@ -30,6 +30,8 @@ docker --version
 pip install -r requirements.txt
 pip freeze > requirements.txt
 
+pip uninstall <github>
+
 
 
 7) Redis
@@ -49,21 +51,19 @@ sudo apt install redis
 pip install Babel
 
 запускаем процесс сбора всех текстов из нашего проекта и создаем соответствующий файл-шаблон .pot для дальнейшей локализации
-pybabel extract --input-dirs=. -o locales/messages.pot
-
-то же самое, но с дополнительной информацией: название проекта, версия, копирайты и электронный адрес для связи в случае багов
-pybabel extract -o locales/messages.pot --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
+pybabel extract -o locales/messages.pot -k _:1,1t -k _:1,2 --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
 
 создаем для gettext директории и файлы .po для нужных локалей
 pybabel init -i locales/messages.pot -d locales -D bot_00_template -l en
-pybabel init -i locales/messages.pot -d locales -D bot_00_template -l de
 pybabel init -i locales/messages.pot -d locales -D bot_00_template -l ru
+pybabel init -i locales/messages.pot -d locales -D bot_00_template -l de
 pybabel init -i locales/messages.pot -d locales -D bot_00_template -l ja
 
 добавляем переводы в соответствующие файлы, прописываем контакты редакторов (человеков)
 
 компилируем файлы переводов в бинарные файлы с расширением .mo чтобы наш бот научился разговаривать на разных языка
 pybabel compile -d locales -D bot_00_template
+
 
 при обновлении кода, повторяем команду extract, обновляем файл .pot, в версию добавляем минорный релиз 0.1.1
 pybabel extract -o locales/messages.pot --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
@@ -80,7 +80,7 @@ pybabel update -i locales/messages.pot -d locales -D bot_00_template -l ja
 pybabel compile -d locales -D bot_00_template
 
 
-pybabel extract -o locales/messages.pot -k _:1,1t -k _:1,2 --copyright-holder="AdvancedBotsCourse" --project="i18n_example_bot" --version=0.1 --msgid-bugs-address=kms101@yandex.ru --input-dirs=.
+pybabel extract -o locales/messages.pot -k _:1,1t -k _:1,2 --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
 
 
 

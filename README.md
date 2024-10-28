@@ -2,14 +2,14 @@
 
 *Шаблон для создания ботов*
 
----
+
 
 
 ## Команды для терминала
 
-# venv
+### venv
 
-python -m venv venv                        -  создать папку venv с виртуальным окружением
+python -m venv venv
 
 source venv/Scripts/activate               -  запустить виртуальное окружение для GitBash
 venv\Scripts\activate                      -  запустить виртуальное окружение для Windows
@@ -28,7 +28,7 @@ sudo apt install redis                     -  установка Redis по ин
 
 pip list
 
-# git
+### git
 
 git init
 git pull
@@ -36,7 +36,6 @@ git add .
 git commit -m "text comit"
 git push
 
-# docker
+### docker
 
 docker
-

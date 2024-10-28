@@ -1,10 +1,28 @@
+import logging
 from aiogram import Router
 from aiogram.types import Message
+from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.utils.i18n import gettext as _
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
 
 # Инициализируем роутер уровня модуля
 other_router = Router()
 
+# Этот хэндлер срабатывает на команду /help
+@other_router.message(Command('help'))
+async def process_help_command(message: Message):
+    await message.answer(
+        text=_('Доступные команды:\n\n'
+               '/start - перезапустить бота\n'
+               '/product - тестовая функция\n'
+               '/help - справка по работе бота\n'
+               '/donat - донат автору\n'
+               '/terms - условия обслуживания\n'
+               '/refund - возврат платежа\n'
+               '/paysupport - поддержка оплаты')
+    )
 
 # Этот хэндлер будет срабатывать на любые сообщения и отправлять пользователю их копию
 @other_router.message()

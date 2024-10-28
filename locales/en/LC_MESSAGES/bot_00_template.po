@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bot_00_template 0.1\n"
 "Report-Msgid-Bugs-To: gontscharowiwan@yandex.ru\n"
-"POT-Creation-Date: 2024-10-28 09:09+0800\n"
-"PO-Revision-Date: 2024-10-28 09:11+0800\n"
+"POT-Creation-Date: 2024-10-28 12:17+0800\n"
+"PO-Revision-Date: 2024-10-28 12:17+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -21,54 +21,46 @@ msgstr ""
 
 #: handlers/other.py:15
 msgid "Данный тип апдейтов не поддерживается методом send_copy"
-msgstr ""
+msgstr "This type of updates is not supported by the send_copy method"
 
 #: handlers/user.py:19
-msgid "Добавить 1 флюмбус"
-msgstr ""
+msgid "Добавить 1 товар"
+msgstr "Add 1 item"
 
 #: handlers/user.py:23
 msgid "Добавить 3 товара"
-msgstr ""
+msgstr "Add 3 items"
 
 #: handlers/user.py:27
 msgid "Убрать 1 товар"
-msgstr ""
+msgstr "Remove 1 item"
 
 #: handlers/user.py:42
-msgid ""
-"Привет, {username}.\n"
-"\n"
-"Добавьте товары в корзину"
-msgstr ""
+msgid "Привет, {username}.\n\nДобавьте товары в корзину"
+msgstr "Hello, {username}.\n\nAdd items to the cart"
 
 #: handlers/user.py:52
-msgid ""
-"Это бот для демонстрации процесса интернационализации\n"
-"\n"
-"Доступные команды:\n"
-"\n"
-"/start - перезапуск бота\n"
-"/help - справка по работе бота"
-msgstr ""
+msgid "Это бот для демонстрации процесса интернационализации\n\nДоступные команды:\n\n/start - перезапуск бота\n/help - справка по работе бота"
+msgstr "This is a bot demonstrating the process of internationalization\n\nAvailable commands:\n\n/start - restart the bot\n/help - help on using the bot"
 
 #: handlers/user.py:66
 msgid "Вы удалили товар"
-msgstr ""
+msgstr "You removed an item"
 
 #: handlers/user.py:68 handlers/user.py:88
 msgid "В корзине {} товар"
-msgstr ""
+msgid_plural "В корзине {} товаров"
+msgstr[0] "There are {} item in the cart"
+msgstr[1] "There are {} items in the cart"
 
 #: handlers/user.py:73
 msgid "В корзине пусто"
-msgstr ""
+msgstr "The cart is empty"
 
 #: handlers/user.py:83
 msgid "Вы добавили товар"
-msgstr ""
+msgstr "You added an item"
 
 #: handlers/user.py:86
 msgid "Вы добавили товары"
-msgstr ""
-
+msgstr "You added items"
