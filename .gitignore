@@ -17,3 +17,6 @@ venv.bak/
 .pylintrc
 
 .mypy_cache/
+
+*.mo
+*.pot

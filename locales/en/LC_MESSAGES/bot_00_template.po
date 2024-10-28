@@ -1,0 +1,74 @@
+# English translations for bot_00_template.
+# Copyright (C) 2024 AdvancedBotTemplate
+# This file is distributed under the same license as the bot_00_template
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bot_00_template 0.1\n"
+"Report-Msgid-Bugs-To: gontscharowiwan@yandex.ru\n"
+"POT-Creation-Date: 2024-10-28 09:09+0800\n"
+"PO-Revision-Date: 2024-10-28 09:11+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: handlers/other.py:15
+msgid "Данный тип апдейтов не поддерживается методом send_copy"
+msgstr ""
+
+#: handlers/user.py:19
+msgid "Добавить 1 флюмбус"
+msgstr ""
+
+#: handlers/user.py:23
+msgid "Добавить 3 товара"
+msgstr ""
+
+#: handlers/user.py:27
+msgid "Убрать 1 товар"
+msgstr ""
+
+#: handlers/user.py:42
+msgid ""
+"Привет, {username}.\n"
+"\n"
+"Добавьте товары в корзину"
+msgstr ""
+
+#: handlers/user.py:52
+msgid ""
+"Это бот для демонстрации процесса интернационализации\n"
+"\n"
+"Доступные команды:\n"
+"\n"
+"/start - перезапуск бота\n"
+"/help - справка по работе бота"
+msgstr ""
+
+#: handlers/user.py:66
+msgid "Вы удалили товар"
+msgstr ""
+
+#: handlers/user.py:68 handlers/user.py:88
+msgid "В корзине {} товар"
+msgstr ""
+
+#: handlers/user.py:73
+msgid "В корзине пусто"
+msgstr ""
+
+#: handlers/user.py:83
+msgid "Вы добавили товар"
+msgstr ""
+
+#: handlers/user.py:86
+msgid "Вы добавили товары"
+msgstr ""
+

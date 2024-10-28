@@ -1,0 +1,98 @@
+1) создать папку с проектом (новым ботом)
+
+2) проверить наличие папки .vscode и файла .pylintrc
+
+	.vscode - папка с джисон файлом (допнастройки как проводить импорты, настройки шрифтов, хлебные крошки и тд)
+	.pylintrc - файл настроек для пайлинтера (это подсказки при написании кода, pip8, в списоке не нужные напоминалки/ошибки)
+
+3) создать папку venv с виртуальным окружением через терминал
+
+python -m venv venv
+python3.11 -m venv venv
+
+4) запустить виртуальное окружение
+
+source venv/Scripts/activate  - для GitBash (рекумендуется)
+venv\Scripts\activate         - для Windows
+deactivate                    - выйти из вируального окружения
+
+
+5) проверить актуальные версии
+
+python --version
+pip --version
+git --version
+docker --version
+
+
+6) расширения requirements
+
+pip install -r requirements.txt
+pip freeze > requirements.txt
+
+
+
+7) Redis
+
+если будут проблемы, тогда нужно обновить и переустановить пакеты
+
+sudo apt update && sudo apt dist-upgrade
+sudo apt install redis
+
+если не поможет - проверить VPN
+если и это не поможет - в файле main отключить Redis, поменять на MemoryStorage
+
+
+
+8) интернализация gettext
+
+pip install Babel
+
+запускаем процесс сбора всех текстов из нашего проекта и создаем соответствующий файл-шаблон .pot для дальнейшей локализации
+pybabel extract --input-dirs=. -o locales/messages.pot
+
+то же самое, но с дополнительной информацией: название проекта, версия, копирайты и электронный адрес для связи в случае багов
+pybabel extract -o locales/messages.pot --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
+
+создаем для gettext директории и файлы .po для нужных локалей
+pybabel init -i locales/messages.pot -d locales -D bot_00_template -l en
+pybabel init -i locales/messages.pot -d locales -D bot_00_template -l de
+pybabel init -i locales/messages.pot -d locales -D bot_00_template -l ru
+pybabel init -i locales/messages.pot -d locales -D bot_00_template -l ja
+
+добавляем переводы в соответствующие файлы, прописываем контакты редакторов (человеков)
+
+компилируем файлы переводов в бинарные файлы с расширением .mo чтобы наш бот научился разговаривать на разных языка
+pybabel compile -d locales -D bot_00_template
+
+при обновлении кода, повторяем команду extract, обновляем файл .pot, в версию добавляем минорный релиз 0.1.1
+pybabel extract -o locales/messages.pot --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
+
+далее повторная генерация файлов с переводами для нужных локалей
+pybabel update -i locales/messages.pot -d locales -D bot_00_template -l en
+pybabel update -i locales/messages.pot -d locales -D bot_00_template -l ru
+pybabel update -i locales/messages.pot -d locales -D bot_00_template -l de
+pybabel update -i locales/messages.pot -d locales -D bot_00_template -l ja
+
+добавляем новые переводы для новых строк, там где метка <#, fuzzy> поправляем перевод, и убираенм метку <#, fuzzy>
+
+теперь снова скомпилируем файлы в бинарный вид с помощью команды в терминале
+pybabel compile -d locales -D bot_00_template
+
+
+pybabel extract -o locales/messages.pot -k _:1,1t -k _:1,2 --copyright-holder="AdvancedBotsCourse" --project="i18n_example_bot" --version=0.1 --msgid-bugs-address=kms101@yandex.ru --input-dirs=.
+
+
+
+10) docker
+
+docker compose up
+docker compose down
+
+docker ps
+
+docker logs <имя контейнера>
+
+http://127.0.0.1:15672/
+http://127.0.0.1:8222/
+http://127.0.0.1:31311/
