@@ -4,38 +4,38 @@
 
 
 
+## venv
 
-## Команды для терминала
+python -m venv venv  
+python3.11 -m venv venv
 
-### venv
+source venv/Scripts/activate               -  запустить виртуальное окружение для GitBash   
+venv\Scripts\activate                      -  запустить виртуальное окружение для Windows  
+deactivate                                 -  выйти из вируального окружения  
+```
+python --version  
+pip --version  
+git --version  
+docker --version  
+```
+pip install -r requirements.txt  
+pip freeze > requirements.txt  
 
-python -m venv venv
+sudo apt update && sudo apt dist-upgrade   -  обновляем и установливаем необходимые пакеты  
+sudo apt install redis                     -  установка Redis по инструкции для Linux  
 
-source venv/Scripts/activate               -  запустить виртуальное окружение для GitBash
-venv\Scripts\activate                      -  запустить виртуальное окружение для Windows
-deactivate                                 -  выйти из вируального окружения
+pip list  
 
-python --version
-pip --version
-git --version
-docker --version
+## git
 
-pip install -r requirements.txt
-pip freeze > requirements.txt
-
-sudo apt update && sudo apt dist-upgrade   -  обновляем и установливаем необходимые пакеты
-sudo apt install redis                     -  установка Redis по инструкции для Linux
-
-pip list
-
-### git
-
-git init
-git pull
-git add .
+`git init`  
+`git pull`  
+git add .  
 git commit -m "text comit"  
-git push
+git push  
+git push --force  
 
-### docker
+
+## docker
 
 docker
