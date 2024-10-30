@@ -5,11 +5,13 @@
 
 
 ## venv
-
-python -m venv venv  
+```
+python -m venv venv
+```
+```
 python3.11 -m venv venv
-
-source venv/Scripts/activate               -  запустить виртуальное окружение для GitBash   
+```
+`source venv/Scripts/activate`               -  запустить виртуальное окружение для GitBash   
 venv\Scripts\activate                      -  запустить виртуальное окружение для Windows  
 deactivate                                 -  выйти из вируального окружения  
 ```
