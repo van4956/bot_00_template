@@ -1,3 +1,10 @@
+import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from sqlalchemy import DateTime, Float, String, Text, Integer, func, BigInteger
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 

@@ -1,3 +1,10 @@
+import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from typing import Union
 
 from aiogram.filters import BaseFilter

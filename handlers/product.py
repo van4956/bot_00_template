@@ -1,4 +1,10 @@
 import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from aiogram import F, Router, html
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, CommandStart
@@ -10,8 +16,7 @@ from aiogram.types import (
 )
 from aiogram.utils.i18n import gettext as _
 
-# Инициализируем логгер модуля
-logger = logging.getLogger(__name__)
+
 
 # Инициализируем роутер уровня модуля
 product_router = Router()

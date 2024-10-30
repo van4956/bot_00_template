@@ -1,12 +1,17 @@
 import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-# Инициализируем логгер модуля
-logger = logging.getLogger(__name__)
+
 
 # Инициализируем роутер уровня модуля
 group_router = Router()

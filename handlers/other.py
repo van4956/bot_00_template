@@ -1,11 +1,15 @@
 import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.utils.i18n import gettext as _
 
-# Инициализируем логгер модуля
-logger = logging.getLogger(__name__)
 
 # Инициализируем роутер уровня модуля
 other_router = Router()

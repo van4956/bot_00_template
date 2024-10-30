@@ -1,4 +1,10 @@
 import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from datetime import datetime, timedelta, timezone
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
@@ -8,8 +14,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, InlineKeyboar
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _
 
-# Инициализируем логгер модуля
-logger = logging.getLogger(__name__)
+
 
 # Объявление маршрутизатора
 donat_router = Router()

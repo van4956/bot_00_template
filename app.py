@@ -2,8 +2,18 @@
 # ctrl + B                        -  запуск скрипта из любого файла проекта
 # ctrl + I                        -  варианты эмодзи
 
-import asyncio
 import logging
+
+# Настраиваем базовую конфигурацию логирования
+logging.basicConfig(level=logging.INFO, format='  -  [%(asctime)s] #%(levelname)-5s -  %(name)s:%(lineno)d  -  %(message)s')
+logger = logging.getLogger(__name__)
+
+# Настраиваем логгер для SQLAlchemy
+sqlalchemy_logger = logging.getLogger('sqlalchemy.engine')
+sqlalchemy_logger.setLevel(logging.INFO)  # Устанавливаем нужный уровень (например, INFO)
+sqlalchemy_logger.propagate = True  # Отключаем передачу сообщений основному логгеру, чтобы не задваивать их
+
+import asyncio
 import sys
 
 from aiogram import Bot, Dispatcher, types
@@ -21,22 +31,11 @@ from database.models import Base
 from middlewares import counter, db
 
 # Устанавливаем политику событийного цикла для Windows
-if sys.platform.startswith("win"):
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-# Настраиваем базовую конфигурацию логирования
-# logging.basicConfig(level=logging.INFO, format='[%(asctime)s] #%(levelname)-8s %(filename)s:%(lineno)d - %(name)s - %(message)s')
-logging.basicConfig(level=logging.INFO, format='[%(asctime)s] #%(levelname)-8s -  %(name)s:%(lineno)d  -  %(message)s')
-
-# Инициализируем логгер модуля
-logger = logging.getLogger(__name__)
-
-# Выводим в консоль информацию о начале запуска бота
-logger.info('Starting bot')
+# if sys.platform.startswith("win"):
+#     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Загружаем конфиг в переменную config
 config: Config = load_config()
-print(config)
 
 
 logger.info('Создаем объект Bot')
@@ -65,7 +64,7 @@ dp.update.middleware(ConstI18nMiddleware(locale='ru', i18n=i18n))
 
 
 logger.info('База данных')
-engine = create_async_engine(config.db.db_post, echo=True)
+engine = create_async_engine(config.db.db_post, echo=False)
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 dp.update.middleware(db.DataBaseSession(session_pool=session_maker))
@@ -77,7 +76,7 @@ async def main() -> None:
 
     # Удаление предыдущей версии базы, и создание новых таблиц заново
     async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.drop_all)
+        # await connection.run_sync(Base.metadata.drop_all)
         await connection.run_sync(Base.metadata.create_all)
 
     # Удаляем вебхуки (то что бот получил пока спал)
@@ -93,7 +92,7 @@ async def main() -> None:
         await bot.set_my_commands(commands=admin_private, scope=types.BotCommandScopeChat(chat_id=admin_id))
 
 
-    logger.info('Запускаем polling')
+    # Запускаем polling
     try:
         await dp.start_polling(bot,
                                allowed_updates=dp.resolve_used_update_types(),)  # Отбираем только используемые события по роутерам

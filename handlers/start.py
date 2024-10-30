@@ -1,4 +1,10 @@
 import logging
+
+# Инициализируем логгер модуля
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("Загружен модуль: %s", __name__)
+
 from aiogram import F, Router, html, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, CommandStart
@@ -8,8 +14,7 @@ from aiogram.utils.i18n import gettext as _
 
 from database.orm_users import orm_add_user
 
-# Инициализируем логгер модуля
-logger = logging.getLogger(__name__)
+
 
 # Инициализируем роутер уровня модуля
 start_router = Router()
@@ -18,7 +23,6 @@ start_router = Router()
 @start_router.message(CommandStart())
 async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
     user_id = message.from_user.id
-    print(message.from_user)
     user_name = message.from_user.username if message.from_user.username else 'None'
     full_name = message.from_user.full_name if message.from_user.full_name else 'None'
     locale = message.from_user.language_code if message.from_user.language_code else 'ru'
@@ -30,10 +34,11 @@ async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
                             'flag':1}
 
     await orm_add_user(session, data)
+    # await bot.send_message(chat_id = -4197834633, text = f"Пользователь {user_name} {user_id} подписался на бота ✅")
     try:
         await bot.send_message(chat_id = -4197834633, text = f"Пользователь {user_name} {user_id} подписался на бота ✅")
     except Exception as e:
-        print("Ошибка: ", e)
+        logger.error("Ошибка при отправке сообщения: %s", str(e))
 
     start_text = f'Приветствую вас {full_name}'
     await message.answer(start_text)
