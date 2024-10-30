@@ -33,27 +33,18 @@ pip freeze > requirements.txt
 pip list  
 ```
 ## git
+
+`git init`  
+
 ```
-git init
+git clone https://github.com/van4956/bot_00_template.git
 ```
-```
-git clone
-```
-```
-git pull
-```
-```  
-git add .
-```
-``` 
-git commit -m "text comit"
-```
-```
-git push
-```
-```  
-git push --force  
-```
+`git pull`  
+`git add . `  
+`git commit -m "text comit"`  
+`git push`  
+`git push --force`    
+
 
 ## docker
 
