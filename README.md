@@ -33,7 +33,7 @@ pip list
 git init
 git pull
 git add .
-git commit -m "text comit"
+git commit -m "text comit"  
 git push
 
 ### docker

@@ -44,7 +44,7 @@ async def process_start_command(message: Message, state: FSMContext):
 @product_router.callback_query(F.data == 'remove_pressed')
 async def process_remove_button_click(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    items_num = data.get('items_num')
+    items_num = data.get('items_num',0)
     if items_num > 0:
         items_num -= 1
         await callback.answer(text=_('Вы удалили товар'))
@@ -61,7 +61,7 @@ async def process_remove_button_click(callback: CallbackQuery, state: FSMContext
 @product_router.callback_query(F.data.startswith("add_pressed_"))
 async def process_button_click(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    items_num = data.get('items_num')
+    items_num = data.get('items_num', 0)
     if callback.data == 'add_pressed_1':
         items_num += 1
         await callback.answer(text=_('Вы добавили товар'))
@@ -69,7 +69,7 @@ async def process_button_click(callback: CallbackQuery, state: FSMContext):
         items_num += 3
         await callback.answer(text=_('Вы добавили товары'))
     await state.update_data(items_num=items_num)
-    await callback.message.edit_text(text=_(
-        'В корзине {} товар',
-        'В корзине {} товаров', items_num).format(items_num),
-        reply_markup=get_keyboard())
+    await callback.message.edit_text(
+        text=_('В корзине {} товар', 'В корзине {} товаров', items_num).format(items_num),
+        reply_markup=get_keyboard()
+    )

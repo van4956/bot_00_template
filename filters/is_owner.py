@@ -14,4 +14,4 @@ class IsOwnerFilter(BaseFilter):
     async def __call__(self, message: Message, bot: Bot) -> bool:
 
         # Проверяем, находится ли ID пользователя, отправившего сообщение, в списке владельцев
-        return message.from_user.id in bot.owner
+        return (message.from_user.id in bot.owner) & self.is_owner

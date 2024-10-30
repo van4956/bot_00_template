@@ -6,11 +6,14 @@ aiodns
 asyncio
 aiosqlite
 sqlalchemy
+asyncpg
 environs
 redis
 aioredis
 requests
 numpy
+psycopg==3.2.1
+psycopg-binary==3.2.1
 
 
 # httpx  # Async http client

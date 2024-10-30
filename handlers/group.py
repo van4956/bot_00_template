@@ -23,3 +23,5 @@ async def on_user_join_or_left(message: Message):
     :param message: Сервисное сообщение о присоединении или выходе участника.
     """
     await message.delete()
+
+ # Спам фильтр сообщений

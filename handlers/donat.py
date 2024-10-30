@@ -1,11 +1,11 @@
 import logging
+from datetime import datetime, timedelta, timezone
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, InlineKeyboardMarkup, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from datetime import datetime, timedelta, timezone
 from aiogram.utils.i18n import gettext as _
 
 # Инициализируем логгер модуля
