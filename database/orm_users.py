@@ -58,3 +58,9 @@ async def orm_update_status(session: AsyncSession, user_id: int, data):
     query = update(Users).where(Users.user_id == user_id).values(status=data)
     await session.execute(query)
     await session.commit()
+
+# изменение locale юзера
+async def orm_update_locale(session: AsyncSession, user_id: int, data):
+    query = update(Users).where(Users.user_id == user_id).values(locale=data)
+    await session.execute(query)
+    await session.commit()

@@ -5,21 +5,27 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.info("Загружен модуль: %s", __name__)
 
+
 from aiogram import F, Router, html, Bot
-from aiogram.fsm.context import FSMContext
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandStart, CommandObject
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import Message
+from aiogram.filters import ChatMemberUpdatedFilter, KICKED, MEMBER
+from aiogram.types import ChatMemberUpdated
 from aiogram.utils.i18n import gettext as _
 
-from database.orm_users import orm_add_user
-
+from database.orm_users import orm_add_user, orm_get_ids, orm_get_users, orm_update_status
+from kbds import keyboard
 
 
 # Инициализируем роутер уровня модуля
 start_router = Router()
 
-# команда /start
+# Функция стартовой клавиатуры
+def start_keyboard():
+    return keyboard.get_keyboard("кнопка 1", "кнопка 2", "кнопка 3", "кнопка 4", sizes=(2, 2, ), placeholder='⬇️')
+
+# Команда /start
 @start_router.message(CommandStart())
 async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
     user_id = message.from_user.id
@@ -34,11 +40,37 @@ async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
                             'flag':1}
 
     await orm_add_user(session, data)
-    # await bot.send_message(chat_id = -4197834633, text = f"Пользователь {user_name} {user_id} подписался на бота ✅")
+
     try:
-        await bot.send_message(chat_id = -4197834633, text = f"Пользователь {user_name} {user_id} подписался на бота ✅")
+        list_users = [user_id for user_id in await orm_get_ids(session)]
+        chat_id = bot.home_group[0]
+        if user_id not in list_users:
+            await bot.send_message(chat_id = chat_id, text = _("✅ Пользователь {user_name} [{user_id}] - подписался на бота").format(user_name=user_name,
+                                                                                                                                     user_id=user_id))
     except Exception as e:
         logger.error("Ошибка при отправке сообщения: %s", str(e))
 
-    start_text = f'Приветствую вас {full_name}'
-    await message.answer(start_text)
+    await message.answer(_('Главная панель'), reply_markup=start_keyboard())
+
+
+# Этот хэндлер будет срабатывать на блокировку бота пользователем
+@start_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
+async def process_user_blocked_bot(event: ChatMemberUpdated, session: AsyncSession, bot: Bot):
+    user_id = event.from_user.id
+    chat_id = bot.home_group[0]
+    user_name = event.from_user.username if event.from_user.username else 'NaN'
+    await orm_update_status(session, user_id, 'kicked')
+    await bot.send_message(chat_id = chat_id, text = _("⛔️ Пользователь {user_name} [{user_id}] - заблокировал бота ").format(user_name=user_name,
+                                                                                                                              user_id=user_id))
+
+# Этот хэндлер будет срабатывать на разблокировку бота пользователем
+@start_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=MEMBER))
+async def process_user_unblocked_bot(event: ChatMemberUpdated, session: AsyncSession, bot: Bot):
+    user_id = event.from_user.id
+    chat_id = bot.home_group[0]
+    full_name = event.from_user.full_name if event.from_user.full_name else "NaN"
+    user_name = event.from_user.username if event.from_user.username else 'NaN'
+    await orm_update_status(session, user_id, 'member')
+    await bot.send_message(chat_id = user_id, text = _('{full_name}, Добро пожаловать обратно!').format(full_name=full_name))
+    await bot.send_message(chat_id = chat_id, text = _("♻️ Пользователь {user_name} [{user_id}] - разблокировал бота ").format(user_name=user_name,
+                                                                                                                               user_id=user_id))

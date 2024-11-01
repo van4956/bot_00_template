@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bot_00_template 0.1\n"
 "Report-Msgid-Bugs-To: gontscharowiwan@yandex.ru\n"
-"POT-Creation-Date: 2024-10-28 12:17+0800\n"
-"PO-Revision-Date: 2024-10-28 12:17+0800\n"
+"POT-Creation-Date: 2024-11-01 09:02+0800\n"
+"PO-Revision-Date: 2024-10-31 15:07+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -19,48 +19,232 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: handlers/other.py:15
+#: handlers/donat.py:36
+msgid ""
+"Пожалуйста, введите сумму в формате <code>/donate [ЧИСЛО]</code>\n"
+"где [ЧИСЛО] это сумма доната, от 1 до 2500 ⭐️ \n"
+"\n"
+"Примеры:\n"
+"• <code>/donate 100</code> - задонатить 100 ⭐️\n"
+"• <code>/donate 500</code> - задонатить 500 ⭐️\n"
+"• <code>/donate 1000</code> - задонатить 1000 ⭐️"
+msgstr ""
+
+#: handlers/donat.py:53
+msgid "Оплатить {amount} XTR"
+msgstr "Pay {amount} XTR"
+
+#: handlers/donat.py:56
+msgid "Отменить"
+msgstr "Cancel"
+
+#: handlers/donat.py:63
+msgid "Донат"
+msgstr "Donate"
+
+#: handlers/donat.py:64
+#, fuzzy
+msgid "На сумму в {amount} ⭐️"
+msgstr "In the amount of {amount} stars"
+
+#: handlers/donat.py:76
+msgid "😢 Донат отменен."
+msgstr "😢 Donation canceled."
+
+#: handlers/donat.py:86
+msgid ""
+"Если вы хотите оформить возврат, воспользуйтесь командой /refund \n"
+"\n"
+"🤓 Вам понадобится ID транзакции.\n"
+"\n"
+"<code>{t_id}</code>"
+msgstr ""
+"If you want a refund, use the /refund command\n"
+"\n"
+"🤓 You will need the transaction ID.\n"
+"\n"
+"<code>{t_id}</code>"
+
+#: handlers/donat.py:99
+msgid ""
+"<b>Terms of Service</b>\n"
+"\n"
+"1. Донаты являются добровольными и могут быть возвращены только в течение"
+" 30 дней после совершения платежа.\n"
+"\n"
+"2. Для возврата средств необходимо предоставить идентификатор транзакции."
+" Получить ID транзакции /paysupport\n"
+"\n"
+"3. После истечения 30 дней возврат средств невозможен.\n"
+"\n"
+"4. Использование бота подразумевает согласие с данными условиями.\n"
+"\n"
+msgstr ""
+
+#: handlers/donat.py:119
+msgid ""
+"Пожалуйста, укажите идентификатор транзакции в формате <code>/refund "
+"[id]</code>, где [id] это идентификатор транзакции, который вы получили "
+"после доната.\n"
+"\n"
+"/terms - Terms of Service\n"
+"/paysupport - поддержка оплаты"
+msgstr ""
+
+#: handlers/donat.py:130
+msgid ""
+"Срок для возврата средств истек. Возврат возможен только в течение 30 "
+"дней после доната."
+msgstr ""
+"The refund period has expired. Refunds are only available within 30 days "
+"after the donation."
+
+#: handlers/donat.py:135
+msgid "Неверный формат идентификатора транзакции."
+msgstr "Invalid transaction ID format."
+
+#: handlers/donat.py:144
+msgid ""
+"Рефанд произведен успешно. Потраченные звёзды уже вернулись на ваш счёт в"
+" Telegram."
+msgstr ""
+"Refund completed successfully. The spent stars have been returned to your"
+" Telegram account."
+
+#: handlers/donat.py:147
+msgid ""
+"Транзакция с указанным идентификатором не найдена. Пожалуйста, проверьте "
+"введенные данные и повторите ещё раз."
+msgstr ""
+"Transaction with the specified ID not found. Please check the entered "
+"data and try again."
+
+#: handlers/donat.py:150
+msgid "Рефанд по этой транзакции уже был ранее произведен."
+msgstr "A refund for this transaction has already been processed."
+
+#: handlers/donat.py:173
+msgid ""
+"<b>🫡 Спасибо!</b>\n"
+"Ваш донат успешно принят.\n"
+"ID транзакции ,code>{t_id}</code>"
+msgstr ""
+"<b>🫡 Thank you!</b>\n"
+"Your donation was successful.\n"
+"Transaction ID: <code>{t_id}</code>"
+
+#: handlers/other.py:25
+msgid ""
+"Доступные команды:\n"
+"\n"
+"/start - перезапустить бота\n"
+"/locale - сменить язык\n"
+"/help - справка по работе бота\n"
+"/product - тестовая функция\n"
+"/donat - донат автору\n"
+"/refund - возврат платежа\n"
+msgstr ""
+"Available commands:\n"
+"\n"
+"/start - restart the bot\n"
+"/locale - change language\n"
+"/help - bot usage guide\n"
+"/product - test function\n"
+"/donat - donate to the author\n"
+"/refund - request a refund\n"
+
+#: handlers/other.py:37 handlers/other.py:58
+msgid "🇺🇸 Английский язык"
+msgstr "🇺🇸 English"
+
+#: handlers/other.py:38 handlers/other.py:63
+msgid "🇷🇺 Русский язык"
+msgstr "🇷🇺 Russian"
+
+#: handlers/other.py:39 handlers/other.py:68
+msgid "🇩🇪 Немецкий язык"
+msgstr "🇩🇪 German"
+
+#: handlers/other.py:40 handlers/other.py:73
+msgid "🇯🇵 Японский язык"
+msgstr "🇯🇵 Japanese"
+
+#: handlers/other.py:48
+msgid "Выберите язык"
+msgstr "Choose a language"
+
+#: handlers/other.py:60
+msgid "Выбран 🇺🇸 Английский язык"
+msgstr "🇺🇸 English selected"
+
+#: handlers/other.py:65
+msgid "Выбран 🇷🇺 Русский язык"
+msgstr "🇷🇺 Russian selected"
+
+#: handlers/other.py:70
+msgid "Выбран 🇩🇪 Немецкий язык"
+msgstr "🇩🇪 German selected"
+
+#: handlers/other.py:75
+msgid "Выбран 🇯🇵 Японский язык"
+msgstr "🇯🇵 Japanese selected"
+
+#: handlers/other.py:82
+msgid ""
+"Текущий язык: \n"
+"{}"
+msgstr ""
+"Current language: \n"
+"{}"
+
+#: handlers/other.py:95
 msgid "Данный тип апдейтов не поддерживается методом send_copy"
-msgstr "This type of updates is not supported by the send_copy method"
+msgstr "This type of update is not supported by the send_copy method"
 
-#: handlers/user.py:19
+#: handlers/product.py:27
 msgid "Добавить 1 товар"
-msgstr "Add 1 item"
+msgstr "Add 1 product"
 
-#: handlers/user.py:23
+#: handlers/product.py:28
 msgid "Добавить 3 товара"
-msgstr "Add 3 items"
+msgstr "Add 3 products"
 
-#: handlers/user.py:27
+#: handlers/product.py:29
 msgid "Убрать 1 товар"
-msgstr "Remove 1 item"
+msgstr "Remove 1 product"
 
-#: handlers/user.py:42
-msgid "Привет, {username}.\n\nДобавьте товары в корзину"
-msgstr "Hello, {username}.\n\nAdd items to the cart"
+#: handlers/product.py:42
+msgid ""
+"Привет, {username}.\n"
+"\n"
+"Добавьте товары в корзину"
+msgstr ""
+"Hello, {username}.\n"
+"\n"
+"Add products to the cart"
 
-#: handlers/user.py:52
-msgid "Это бот для демонстрации процесса интернационализации\n\nДоступные команды:\n\n/start - перезапуск бота\n/help - справка по работе бота"
-msgstr "This is a bot demonstrating the process of internationalization\n\nAvailable commands:\n\n/start - restart the bot\n/help - help on using the bot"
-
-#: handlers/user.py:66
+#: handlers/product.py:55
 msgid "Вы удалили товар"
-msgstr "You removed an item"
+msgstr "You removed the product"
 
-#: handlers/user.py:68 handlers/user.py:88
+#: handlers/product.py:57 handlers/product.py:78
+#, fuzzy
 msgid "В корзине {} товар"
-msgid_plural "В корзине {} товаров"
-msgstr[0] "There are {} item in the cart"
-msgstr[1] "There are {} items in the cart"
+msgstr "There are {} product in the cart"
 
-#: handlers/user.py:73
+#: handlers/product.py:62
 msgid "В корзине пусто"
 msgstr "The cart is empty"
 
-#: handlers/user.py:83
+#: handlers/product.py:72
 msgid "Вы добавили товар"
-msgstr "You added an item"
+msgstr "You added the product"
 
-#: handlers/user.py:86
+#: handlers/product.py:75
 msgid "Вы добавили товары"
-msgstr "You added items"
+msgstr "You added products"
+
+#: handlers/start.py:48
+msgid "Приветствую вас {full_name}"
+msgstr ""
+
