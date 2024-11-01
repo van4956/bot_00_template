@@ -23,7 +23,7 @@ start_router = Router()
 
 # Функция стартовой клавиатуры
 def start_keyboard():
-    return keyboard.get_keyboard("кнопка 1", "кнопка 2", "кнопка 3", "кнопка 4", sizes=(2, 2, ), placeholder='⬇️')
+    return keyboard.get_keyboard(_("кнопка 1"), _("кнопка 2"), _("кнопка 3"), _("кнопка 4"), sizes=(2, 2, ), placeholder='⬇️')
 
 # Команда /start
 @start_router.message(CommandStart())

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bot_00_template 0.1\n"
 "Report-Msgid-Bugs-To: gontscharowiwan@yandex.ru\n"
-"POT-Creation-Date: 2024-11-01 09:02+0800\n"
+"POT-Creation-Date: 2024-11-01 13:02+0800\n"
 "PO-Revision-Date: 2024-10-31 15:07+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -19,9 +19,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: handlers/donat.py:36
-msgid ""
-"Пожалуйста, введите сумму в формате <code>/donate [ЧИСЛО]</code>\n"
+#: handlers/donat.py:37
+msgid "Пожалуйста, введите сумму в формате <code>/donate [ЧИСЛО]</code>\n"
 "где [ЧИСЛО] это сумма доната, от 1 до 2500 ⭐️ \n"
 "\n"
 "Примеры:\n"
@@ -29,29 +28,39 @@ msgid ""
 "• <code>/donate 500</code> - задонатить 500 ⭐️\n"
 "• <code>/donate 1000</code> - задонатить 1000 ⭐️"
 msgstr ""
+"Please enter the amount in the format <code>/donate [NUMBER]</code>\n"
+"where [NUMBER] is the donation amount, from 1 to 2500 ⭐️ \n"
+"\n"
+"Examples:\n"
+"• <code>/donate 100</code> - donate 100 ⭐️\n"
+"• <code>/donate 500</code> - donate 500 ⭐️\n"
+"• <code>/donate 1000</code> - donate 1000 ⭐️"
 
-#: handlers/donat.py:53
+#: handlers/donat.py:54
 msgid "Оплатить {amount} XTR"
 msgstr "Pay {amount} XTR"
 
-#: handlers/donat.py:56
+#: handlers/donat.py:57
 msgid "Отменить"
 msgstr "Cancel"
 
-#: handlers/donat.py:63
+#: handlers/donat.py:64
 msgid "Донат"
 msgstr "Donate"
 
-#: handlers/donat.py:64
-#, fuzzy
+#: handlers/donat.py:65
 msgid "На сумму в {amount} ⭐️"
-msgstr "In the amount of {amount} stars"
+msgstr "In the amount of {amount} ⭐️"
 
-#: handlers/donat.py:76
+#: handlers/donat.py:77
 msgid "😢 Донат отменен."
 msgstr "😢 Donation canceled."
 
-#: handlers/donat.py:86
+#: handlers/donat.py:85
+msgid "ID транзакции не найден"
+msgstr "Transaction ID not found"
+
+#: handlers/donat.py:87
 msgid ""
 "Если вы хотите оформить возврат, воспользуйтесь командой /refund \n"
 "\n"
@@ -65,65 +74,67 @@ msgstr ""
 "\n"
 "<code>{t_id}</code>"
 
-#: handlers/donat.py:99
+#: handlers/donat.py:93
 msgid ""
-"<b>Terms of Service</b>\n"
+"<b>Условия использования бота</b>\n"
 "\n"
-"1. Донаты являются добровольными и могут быть возвращены только в течение"
-" 30 дней после совершения платежа.\n"
+"1. Донаты являются добровольными и могут быть возвращены только в течение 30 дней после совершения платежа.\n"
 "\n"
-"2. Для возврата средств необходимо предоставить идентификатор транзакции."
-" Получить ID транзакции /paysupport\n"
+"2. Для возврата средств необходимо предоставить идентификатор транзакции. Получить ID транзакции /paysupport\n"
 "\n"
 "3. После истечения 30 дней возврат средств невозможен.\n"
 "\n"
 "4. Использование бота подразумевает согласие с данными условиями.\n"
 "\n"
 msgstr ""
+"<b>Terms of Use</b>\n"
+"\n"
+"1. Donations are voluntary and can be refunded only within 30 days after the payment is made.\n"
+"\n"
+"2. To get a refund, you need to provide the transaction ID. Get the transaction ID via /paysupport\n"
+"\n"
+"3. After 30 days, refunds are no longer available.\n"
+"\n"
+"4. Using the bot implies acceptance of these terms.\n"
+"\n"
 
-#: handlers/donat.py:119
+#: handlers/donat.py:108
 msgid ""
-"Пожалуйста, укажите идентификатор транзакции в формате <code>/refund "
-"[id]</code>, где [id] это идентификатор транзакции, который вы получили "
-"после доната.\n"
+"Пожалуйста, укажите идентификатор транзакции в формате <code>/refund [id]</code>, где [id] это идентификатор транзакции, который вы получили после доната.\n"
 "\n"
 "/terms - Terms of Service\n"
 "/paysupport - поддержка оплаты"
 msgstr ""
+"Please specify the transaction ID in the format <code>/refund [id]</code>, where [id] is the transaction ID you received after the donation.\n"
+"\n"
+"/terms - Terms of Service\n"
+"/paysupport - payment support"
 
-#: handlers/donat.py:130
-msgid ""
-"Срок для возврата средств истек. Возврат возможен только в течение 30 "
-"дней после доната."
-msgstr ""
-"The refund period has expired. Refunds are only available within 30 days "
-"after the donation."
+#: handlers/donat.py:119
+msgid "Срок для возврата средств истек. Возврат возможен только в течение 30 дней после доната."
+msgstr "The refund period has expired. Refunds are only available within 30 days after the donation."
 
-#: handlers/donat.py:135
+#: handlers/donat.py:124
 msgid "Неверный формат идентификатора транзакции."
 msgstr "Invalid transaction ID format."
 
-#: handlers/donat.py:144
+#: handlers/donat.py:133
 msgid ""
-"Рефанд произведен успешно. Потраченные звёзды уже вернулись на ваш счёт в"
-" Telegram."
+"Рефанд произведен успешно. Потраченные звёзды уже вернулись на ваш счёт в Telegram."
 msgstr ""
-"Refund completed successfully. The spent stars have been returned to your"
-" Telegram account."
+"Refund completed successfully. The spent stars have been returned to your Telegram account."
 
-#: handlers/donat.py:147
+#: handlers/donat.py:136
 msgid ""
-"Транзакция с указанным идентификатором не найдена. Пожалуйста, проверьте "
-"введенные данные и повторите ещё раз."
+"Транзакция с указанным идентификатором не найдена. Пожалуйста, проверьте введенные данные и повторите ещё раз."
 msgstr ""
-"Transaction with the specified ID not found. Please check the entered "
-"data and try again."
+"Transaction with the specified ID not found. Please check the entered data and try again."
 
-#: handlers/donat.py:150
+#: handlers/donat.py:139
 msgid "Рефанд по этой транзакции уже был ранее произведен."
 msgstr "A refund for this transaction has already been processed."
 
-#: handlers/donat.py:173
+#: handlers/donat.py:161
 msgid ""
 "<b>🫡 Спасибо!</b>\n"
 "Ваш донат успешно принят.\n"
@@ -133,7 +144,7 @@ msgstr ""
 "Your donation was successful.\n"
 "Transaction ID: <code>{t_id}</code>"
 
-#: handlers/other.py:25
+#: handlers/other.py:26
 msgid ""
 "Доступные команды:\n"
 "\n"
@@ -153,51 +164,47 @@ msgstr ""
 "/donat - donate to the author\n"
 "/refund - request a refund\n"
 
-#: handlers/other.py:37 handlers/other.py:58
+#: handlers/other.py:38 handlers/other.py:59
 msgid "🇺🇸 Английский язык"
 msgstr "🇺🇸 English"
 
-#: handlers/other.py:38 handlers/other.py:63
+#: handlers/other.py:39 handlers/other.py:64
 msgid "🇷🇺 Русский язык"
 msgstr "🇷🇺 Russian"
 
-#: handlers/other.py:39 handlers/other.py:68
+#: handlers/other.py:40 handlers/other.py:69
 msgid "🇩🇪 Немецкий язык"
 msgstr "🇩🇪 German"
 
-#: handlers/other.py:40 handlers/other.py:73
+#: handlers/other.py:41 handlers/other.py:74
 msgid "🇯🇵 Японский язык"
 msgstr "🇯🇵 Japanese"
 
-#: handlers/other.py:48
+#: handlers/other.py:49
 msgid "Выберите язык"
 msgstr "Choose a language"
 
-#: handlers/other.py:60
+#: handlers/other.py:61
 msgid "Выбран 🇺🇸 Английский язык"
 msgstr "🇺🇸 English selected"
 
-#: handlers/other.py:65
+#: handlers/other.py:66
 msgid "Выбран 🇷🇺 Русский язык"
 msgstr "🇷🇺 Russian selected"
 
-#: handlers/other.py:70
+#: handlers/other.py:71
 msgid "Выбран 🇩🇪 Немецкий язык"
 msgstr "🇩🇪 German selected"
 
-#: handlers/other.py:75
+#: handlers/other.py:76
 msgid "Выбран 🇯🇵 Японский язык"
 msgstr "🇯🇵 Japanese selected"
 
-#: handlers/other.py:82
-msgid ""
-"Текущий язык: \n"
-"{}"
-msgstr ""
-"Current language: \n"
-"{}"
+#: handlers/other.py:83
+msgid "Выбран: \n{current_language}"
+msgstr "Selected: \n{current_language}"
 
-#: handlers/other.py:95
+#: handlers/other.py:97
 msgid "Данный тип апдейтов не поддерживается методом send_copy"
 msgstr "This type of update is not supported by the send_copy method"
 
@@ -245,6 +252,21 @@ msgid "Вы добавили товары"
 msgstr "You added products"
 
 #: handlers/start.py:48
-msgid "Приветствую вас {full_name}"
-msgstr ""
+msgid "✅ Пользователь {user_name} [{user_id}] - подписался на бота"
+msgstr "✅ User {user_name} [{user_id}] - subscribed to the bot"
 
+#: handlers/start.py:53
+msgid "Главная панель"
+msgstr "Main panel"
+
+#: handlers/start.py:63
+msgid "⛔️ Пользователь {user_name} [{user_id}] - заблокировал бота "
+msgstr "⛔️ User {user_name} [{user_id}] - blocked the bot"
+
+#: handlers/start.py:74
+msgid "{full_name}, Добро пожаловать обратно!"
+msgstr "{full_name}, Welcome back!"
+
+#: handlers/start.py:75
+msgid "♻️ Пользователь {user_name} [{user_id}] - разблокировал бота "
+msgstr "♻️ User {user_name} [{user_id}] - unblocked the bot"
