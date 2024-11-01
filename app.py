@@ -62,7 +62,7 @@ dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
 # USER_IN_CHAT  -  для каждого юзера, в каждом чате ведется своя запись состояний (по дефолту)
 # GLOBAL_USER  -  для каждого юзера везде ведется своё состояние
 
-# Создаем движок бд
+# Создаем движок бд, создаем ассинхроную сессию
 engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite
 # engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
@@ -98,13 +98,14 @@ dp.include_router(FSMtest.fsmtest_router)
 dp.include_router(other.other_router)
 
 
-# Типы объектов которые будем отлавливать ботом
+# Типы апдейтов которые будем отлавливать ботом
 # ALLOWED_UPDATES = ['message', 'edited_message', 'callback_query',]  # Отбираем определенные типы апдейтов
 ALLOWED_UPDATES = dp.resolve_used_update_types()  # Отбираем только используемые события по роутерам
 
 # Функция сработает при остановке работы бота
 async def on_shutdown():
     print('---   Бот лег!  ','-'*80)
+    await bot.send_message(chat_id = bot.owner[0], text = "Бот лег!")
 
 # Главная функция конфигурирования и запуска бота
 async def main() -> None:
