@@ -15,7 +15,7 @@ from aiogram.types import ChatMemberUpdated
 from aiogram.utils.i18n import gettext as _
 
 from database.orm_users import orm_add_user, orm_get_ids, orm_get_users, orm_update_status
-from kbds import keyboard
+from common import keyboard
 
 
 # Инициализируем роутер уровня модуля
@@ -50,7 +50,7 @@ async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
     except Exception as e:
         logger.error("Ошибка при отправке сообщения: %s", str(e))
 
-    await message.answer(_('Главная панель'), reply_markup=start_keyboard())
+    await message.answer(_('Бот активирован!'), reply_markup=keyboard.del_kb)
 
 
 # Этот хэндлер будет срабатывать на блокировку бота пользователем

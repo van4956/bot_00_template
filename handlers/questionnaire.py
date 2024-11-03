@@ -16,7 +16,7 @@ from aiogram.types import (CallbackQuery, InlineKeyboardButton,
                            InlineKeyboardMarkup, Message, PhotoSize)
 
 # Инициализируем роутер уровня модуля
-fsmtest_router = Router()
+questionnaire_router = Router()
 
 # Создаем "базу данных" пользователей
 user_dict: dict[int, dict[str, str | int | bool | Any]] = {}
@@ -37,18 +37,18 @@ class FSMFillForm(StatesGroup):
 
 # Этот хэндлер будет срабатывать на команду /start вне состояний
 # и предлагать перейти к заполнению анкеты, отправив команду /fillform
-@fsmtest_router.message(Command('fsm'), StateFilter(default_state))
+@questionnaire_router.message(Command('questionnaire'), StateFilter(default_state))
 async def process_fsm_command(message: Message):
     await message.answer(
-        text='Этот бот демонстрирует работу FSM\n\n'
-             'Чтобы перейти к заполнению анкеты - '
-             'отправьте команду /fillform'
+        text='Чтобы перейти к заполнению анкеты - '
+             'отправьте команду /fillform\n\n'
+             'Чтобы прервать заполнение анкеты - отправьте команду /cancel'
     )
 
 
 # Этот хэндлер будет срабатывать на команду "/cancel" в состоянии
 # по умолчанию и сообщать, что эта команда работает внутри машины состояний
-@fsmtest_router.message(Command(commands='cancel'), StateFilter(default_state))
+@questionnaire_router.message(Command(commands='cancel'), StateFilter(default_state))
 async def process_cancel_command(message: Message):
     await message.answer(
         text='Отменять нечего. Вы вне машины состояний\n\n'
@@ -59,7 +59,7 @@ async def process_cancel_command(message: Message):
 
 # Этот хэндлер будет срабатывать на команду "/cancel" в любых состояниях,
 # кроме состояния по умолчанию, и отключать машину состояний
-@fsmtest_router.message(Command(commands='cancel'), ~StateFilter(default_state))
+@questionnaire_router.message(Command(commands='cancel'), ~StateFilter(default_state))
 async def process_cancel_command_state(message: Message, state: FSMContext):
     await message.answer(
         text='Вы вышли из машины состояний\n\n'
@@ -72,7 +72,7 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
 
 # Этот хэндлер будет срабатывать на команду /fillform
 # и переводить бота в состояние ожидания ввода имени
-@fsmtest_router.message(Command(commands='fillform'), StateFilter(default_state))
+@questionnaire_router.message(Command(commands='fillform'), StateFilter(default_state))
 async def process_fillform_command(message: Message, state: FSMContext):
     await message.answer(text='Пожалуйста, введите ваше имя')
     # Устанавливаем состояние ожидания ввода имени
@@ -81,7 +81,7 @@ async def process_fillform_command(message: Message, state: FSMContext):
 
 # Этот хэндлер будет срабатывать, если введено корректное имя
 # и переводить в состояние ожидания ввода возраста
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_name), F.text.isalpha())
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_name), F.text.isalpha())
 async def process_name_sent(message: Message, state: FSMContext):
     # Cохраняем введенное имя в хранилище по ключу "name"
     await state.update_data(name=message.text)
@@ -92,7 +92,7 @@ async def process_name_sent(message: Message, state: FSMContext):
 
 # Этот хэндлер будет срабатывать, если во время ввода имени
 # будет введено что-то некорректное
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_name))
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_name))
 async def warning_not_name(message: Message):
     await message.answer(
         text='То, что вы отправили не похоже на имя\n\n'
@@ -103,7 +103,7 @@ async def warning_not_name(message: Message):
 
 # Этот хэндлер будет срабатывать, если введен корректный возраст
 # и переводить в состояние выбора пола
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_age),
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_age),
             lambda x: x.text.isdigit() and 4 <= int(x.text) <= 120)
 async def process_age_sent(message: Message, state: FSMContext):
     # Cохраняем возраст в хранилище по ключу "age"
@@ -139,7 +139,7 @@ async def process_age_sent(message: Message, state: FSMContext):
 
 # Этот хэндлер будет срабатывать, если во время ввода возраста
 # будет введено что-то некорректное
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_age))
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_age))
 async def warning_not_age(message: Message):
     await message.answer(
         text='Возраст должен быть целым числом от 4 до 120\n\n'
@@ -150,8 +150,7 @@ async def warning_not_age(message: Message):
 
 # Этот хэндлер будет срабатывать на нажатие кнопки при
 # выборе пола и переводить в состояние отправки фото
-@fsmtest_router.callback_query(StateFilter(FSMFillForm.fill_gender),
-                   F.data.in_(['male', 'female', 'undefined_gender']))
+@questionnaire_router.callback_query(StateFilter(FSMFillForm.fill_gender), F.data.in_(['male', 'female', 'undefined_gender']))
 async def process_gender_press(callback: CallbackQuery, state: FSMContext):
     # Cохраняем пол (callback.data нажатой кнопки) в хранилище,
     # по ключу "gender"
@@ -168,7 +167,7 @@ async def process_gender_press(callback: CallbackQuery, state: FSMContext):
 
 # Этот хэндлер будет срабатывать, если во время выбора пола
 # будет введено/отправлено что-то некорректное
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_gender))
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_gender))
 async def warning_not_gender(message: Message):
     await message.answer(
         text='Пожалуйста, пользуйтесь кнопками '
@@ -179,8 +178,7 @@ async def warning_not_gender(message: Message):
 
 # Этот хэндлер будет срабатывать, если отправлено фото
 # и переводить в состояние выбора образования
-@fsmtest_router.message(StateFilter(FSMFillForm.upload_photo),
-            F.photo[-1].as_('largest_photo'))
+@questionnaire_router.message(StateFilter(FSMFillForm.upload_photo), F.photo[-1].as_('largest_photo'))
 async def process_photo_sent(message: Message,
                              state: FSMContext,
                              largest_photo: PhotoSize):
@@ -221,7 +219,7 @@ async def process_photo_sent(message: Message,
 
 # Этот хэндлер будет срабатывать, если во время отправки фото
 # будет введено/отправлено что-то некорректное
-@fsmtest_router.message(StateFilter(FSMFillForm.upload_photo))
+@questionnaire_router.message(StateFilter(FSMFillForm.upload_photo))
 async def warning_not_photo(message: Message):
     await message.answer(
         text='Пожалуйста, на этом шаге отправьте '
@@ -232,7 +230,7 @@ async def warning_not_photo(message: Message):
 
 # Этот хэндлер будет срабатывать, если выбрано образование
 # и переводить в состояние согласия получать новости
-@fsmtest_router.callback_query(StateFilter(FSMFillForm.fill_education),
+@questionnaire_router.callback_query(StateFilter(FSMFillForm.fill_education),
                    F.data.in_(['secondary', 'higher', 'no_edu']))
 async def process_education_press(callback: CallbackQuery, state: FSMContext):
     # Cохраняем данные об образовании по ключу "education"
@@ -264,7 +262,7 @@ async def process_education_press(callback: CallbackQuery, state: FSMContext):
 
 # Этот хэндлер будет срабатывать, если во время выбора образования
 # будет введено/отправлено что-то некорректное
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_education))
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_education))
 async def warning_not_education(message: Message):
     await message.answer(
         text='Пожалуйста, пользуйтесь кнопками при выборе образования\n\n'
@@ -275,7 +273,7 @@ async def warning_not_education(message: Message):
 
 # Этот хэндлер будет срабатывать на выбор получать или
 # не получать новости и выводить из машины состояний
-@fsmtest_router.callback_query(StateFilter(FSMFillForm.fill_wish_news),
+@questionnaire_router.callback_query(StateFilter(FSMFillForm.fill_wish_news),
                    F.data.in_(['yes_news', 'no_news']))
 async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
     # Cохраняем данные о получении новостей по ключу "wish_news"
@@ -299,7 +297,7 @@ async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
 
 # Этот хэндлер будет срабатывать, если во время согласия на получение
 # новостей будет введено/отправлено что-то некорректное
-@fsmtest_router.message(StateFilter(FSMFillForm.fill_wish_news))
+@questionnaire_router.message(StateFilter(FSMFillForm.fill_wish_news))
 async def warning_not_wish_news(message: Message):
     await message.answer(
         text='Пожалуйста, воспользуйтесь кнопками!\n\n'
@@ -310,7 +308,7 @@ async def warning_not_wish_news(message: Message):
 
 # Этот хэндлер будет срабатывать на отправку команды /showdata
 # и отправлять в чат данные анкеты, либо сообщение об отсутствии данных
-@fsmtest_router.message(Command(commands='showdata'), StateFilter(default_state))
+@questionnaire_router.message(Command(commands='showdata'), StateFilter(default_state))
 async def process_showdata_command(message: Message):
     # Отправляем пользователю анкету, если она есть в "базе данных"
     if message.from_user.id in user_dict:
@@ -328,10 +326,3 @@ async def process_showdata_command(message: Message):
             text='Вы еще не заполняли анкету. Чтобы приступить - '
             'отправьте команду /fillform'
         )
-
-
-# # Этот хэндлер будет срабатывать на любые сообщения в состоянии "по умолчанию",
-# # кроме тех, для которых есть отдельные хэндлеры
-# @fsmtest_router.message(StateFilter(default_state))
-# async def send_echo(message: Message):
-#     await message.reply(text='Извините, моя твоя не понимать')

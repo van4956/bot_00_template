@@ -28,7 +28,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from config_data.config import Config, load_config
 
-from handlers import other, admin, product, donat, group, start, owner, aiogram_dialog, FSMtest
+from handlers import other, admin, product, group, questionnaire, start, owner, donate
 from common.comands import private, admin_private
 from database.models import Base
 from middlewares import counter, db, locale
@@ -90,10 +90,9 @@ dp.include_router(start.start_router)
 dp.include_router(owner.owner_router)
 dp.include_router(admin.admin_router)
 dp.include_router(product.product_router)
-dp.include_router(donat.donat_router)
+dp.include_router(donate.donate_router)
 dp.include_router(group.group_router)
-dp.include_router(aiogram_dialog.aiogram_dialog_router)
-dp.include_router(FSMtest.fsmtest_router)
+dp.include_router(questionnaire.questionnaire_router)
 
 dp.include_router(other.other_router)
 
@@ -135,7 +134,7 @@ async def main() -> None:
     try:
         await dp.start_polling(bot,
                                allowed_updates=ALLOWED_UPDATES,)
-                            #    skip_updates=False)  # Если бот будет обрабатывать платежи или другие важные вещи, НЕ пропускаем обновления!
+                            #    skip_updates=False)  # Если бот будет обрабатывать платежи, НЕ пропускаем обновления!
     finally:
         await bot.session.close()
 

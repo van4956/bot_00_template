@@ -23,5 +23,10 @@ admin_router.message.filter(ChatTypeFilter(["private"]), IsAdminListFilter(is_ad
 # Here is some example !ping command ...
 @admin_router.message(IsAdminListFilter(is_admin=True), Command(commands=["ping"]),)
 async def cmd_ping_bot(message: Message, counter):
-    print(counter)
     await message.reply(f"ping-msg-{counter}")
+
+
+# Этот хендлер показывает ID чата в котором запущена команда
+@admin_router.message(Command("get_id"))
+async def get_chat_id_cmd(message: Message):
+    await message.answer(f"ID: <code>{message.chat.id}</code>")

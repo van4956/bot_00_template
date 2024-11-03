@@ -16,3 +16,5 @@ from filters.chat_type import ChatTypeFilter
 
 owner_router = Router()
 owner_router.message.filter(ChatTypeFilter(["private"]), IsOwnerFilter(is_owner=True))
+
+
