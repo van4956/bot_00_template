@@ -28,7 +28,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from config_data.config import Config, load_config
 
-from handlers import other, admin, product, group, questionnaire, start, owner, donate
+from handlers import other, admin, product, group, questionnaire, start, owner, donate, payments
 from common.comands import private, admin_private
 from database.models import Base
 from middlewares import counter, db, locale
@@ -89,8 +89,9 @@ dp.update.middleware(FSMI18nMiddleware(i18n=i18n))  # получение язы�
 dp.include_router(start.start_router)
 dp.include_router(owner.owner_router)
 dp.include_router(admin.admin_router)
-dp.include_router(product.product_router)
 dp.include_router(donate.donate_router)
+dp.include_router(product.product_router)
+dp.include_router(payments.payments_router)
 dp.include_router(group.group_router)
 dp.include_router(questionnaire.questionnaire_router)
 

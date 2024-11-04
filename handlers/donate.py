@@ -11,6 +11,7 @@ from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, CommandStart, CommandObject
+from aiogram.filters.state import State, StatesGroup
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, InlineKeyboardMarkup, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _
@@ -23,13 +24,17 @@ donate_router = Router()
 # Фильтрация сообщений для обработки только в приватных чатах
 donate_router.message.filter(F.chat.type == "private")
 
+# Определение класс состояний для валюты
+class Donate(StatesGroup):
+    donate = State()
+
 # Условие для возврата: возврат возможен только в течение 30 дней после доната
 REFUND_PERIOD_DAYS = 30
 
 
 # Обработчики
 @donate_router.message(Command("donate"))
-async def cmd_donate(message: Message, command: CommandObject):
+async def cmd_donate(message: Message, command: CommandObject, state: FSMContext):
     # Проверяем, чтобы сумма была от 1 до 2500 звёзд (таковы лимиты Telegram API)
     if command.args is None or not command.args.isdigit() or not 1 <= int(command.args) <= 2500:
         await message.answer(text=_('Поддержать автора донатом.\n\n'
@@ -62,12 +67,15 @@ async def cmd_donate(message: Message, command: CommandObject):
         reply_markup=kb.as_markup()
     )
 
+    await state.set_state(Donate.donate)
+
 
 # Обработка отмены доната, выводим сообщение об отмене и удаляем сообщение
-@donate_router.callback_query(F.data == "donate_cancel")
-async def on_donate_cancel(callback: CallbackQuery):
+@donate_router.callback_query(Donate.donate, F.data == "donate_cancel")
+async def on_donate_cancel(callback: CallbackQuery, state: FSMContext):
     await callback.answer(_("😢 Донат отменен."))
     await callback.message.delete()
+    await state.clear()
 
 @donate_router.message(Command('refundd'))
 async def command_refund_handler(message: Message, bot: Bot, command: CommandObject) -> None:
@@ -135,7 +143,7 @@ async def cmd_refund(message: Message, bot: Bot, command: CommandObject, state: 
 
 
 # Проверка перед оплатой, бот должен ответить в течение 10 секунд
-@donate_router.pre_checkout_query()
+@donate_router.pre_checkout_query(Donate.donate)
 async def pre_checkout_query(query: PreCheckoutQuery):
     # Мы всегда отвечаем положительно, так как это просто донат
     await query.answer(ok=True)
@@ -146,7 +154,7 @@ async def pre_checkout_query(query: PreCheckoutQuery):
 
 
 # Обработка успешного платежа
-@donate_router.message(F.successful_payment)
+@donate_router.message(Donate.donate, F.successful_payment)
 async def on_successfull_payment(message: Message, state: FSMContext):
     # Получаем объект message.successful_payment
     t_id = message.successful_payment.telegram_payment_charge_id  # ID транзакции
@@ -170,6 +178,8 @@ async def on_successfull_payment(message: Message, state: FSMContext):
         # ❤️ сердечко - 5159385139981059251
         # 🎉 праздник - 5046509860389126442
         # 💩 какаха - 5046589136895476101
+
+    await state.clear()
 
 
 

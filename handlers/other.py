@@ -27,7 +27,7 @@ async def process_help_command(message: Message):
                '/start - перезапустить бота\n'
                '/help - справка по работе бота\n'
                '/language - сменить язык\n\n'
-               '/product - выбор товаров\n'
+               '/product - выборт товаров'
                '/payments - оплата товаров\n'
                '/questionnaire - анкетирование\n\n'
                '/donate - отправить донат\n'
