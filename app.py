@@ -57,6 +57,7 @@ bot.owner = config.tg_bot.owner
 bot.admin_list = config.tg_bot.admin_list
 bot.home_group = config.tg_bot.home_group
 
+
 dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
                 storage=storage)
 # USER_IN_CHAT  -  для каждого юзера, в каждом чате ведется своя запись состояний (по дефолту)
@@ -104,8 +105,10 @@ ALLOWED_UPDATES = dp.resolve_used_update_types()  # Отбираем тольк�
 
 # Функция сработает при остановке работы бота
 async def on_shutdown():
-    print('---   Бот лег!  ','-'*80)
-    await bot.send_message(chat_id = bot.owner[0], text = "Бот лег!")
+    print('--☠️----   Бот лег!  ','-'*80)
+    bot_info = await bot.get_me()
+    bot_username = bot_info.username
+    await bot.send_message(chat_id = bot.home_group[0], text = f"☠️ Бот <code>@{bot_username}</code> - лег!")
 
 # Главная функция конфигурирования и запуска бота
 async def main() -> None:

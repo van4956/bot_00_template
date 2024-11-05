@@ -174,6 +174,15 @@ async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: 
 
 @payments_router.message(F.successful_payment)
 async def process_successful_payment(message: Message):
-    await message.answer(text= successful_payment.format(total_amount=message.successful_payment.total_amount // 100,
-                                                         currency=message.successful_payment.currency)
-                                                         )
+    """
+    Обработка успешного платежа:
+        - получаем полную сумму платежа (total_amount) и валюту (currency),
+        - форматируем текст ответа,
+        - отправляем пользователю сообщение с информацией о платеже.
+    """
+    await message.answer(
+        text=successful_payment.format(
+            total_amount=message.successful_payment.total_amount // 100,
+            currency=message.successful_payment.currency
+        )
+    )

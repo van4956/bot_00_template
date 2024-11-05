@@ -45,7 +45,7 @@ async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
         list_users = [user_id for user_id in await orm_get_ids(session)]
         chat_id = bot.home_group[0]
         if user_id not in list_users:
-            await bot.send_message(chat_id = chat_id, text = _("✅ Пользователь {user_name} [{user_id}] - подписался на бота").format(user_name=user_name,
+            await bot.send_message(chat_id=chat_id, text=_("✅ Пользователь <code>@{user_name}</code> - подписался на бота").format(user_name=user_name,
                                                                                                                                      user_id=user_id))
     except Exception as e:
         logger.error("Ошибка при отправке сообщения: %s", str(e))
@@ -60,7 +60,7 @@ async def process_user_blocked_bot(event: ChatMemberUpdated, session: AsyncSessi
     chat_id = bot.home_group[0]
     user_name = event.from_user.username if event.from_user.username else 'NaN'
     await orm_update_status(session, user_id, 'kicked')
-    await bot.send_message(chat_id = chat_id, text = _("⛔️ Пользователь {user_name} [{user_id}] - заблокировал бота ").format(user_name=user_name,
+    await bot.send_message(chat_id = chat_id, text = _("⛔️ Пользователь <code>@{user_name}</code> - заблокировал бота ").format(user_name=user_name,
                                                                                                                               user_id=user_id))
 
 # Этот хэндлер будет срабатывать на разблокировку бота пользователем
@@ -72,5 +72,5 @@ async def process_user_unblocked_bot(event: ChatMemberUpdated, session: AsyncSes
     user_name = event.from_user.username if event.from_user.username else 'NaN'
     await orm_update_status(session, user_id, 'member')
     await bot.send_message(chat_id = user_id, text = _('{full_name}, Добро пожаловать обратно!').format(full_name=full_name))
-    await bot.send_message(chat_id = chat_id, text = _("♻️ Пользователь {user_name} [{user_id}] - разблокировал бота ").format(user_name=user_name,
+    await bot.send_message(chat_id = chat_id, text = _("♻️ Пользователь <code>@{user_name}</code> - разблокировал бота ").format(user_name=user_name,
                                                                                                                                user_id=user_id))

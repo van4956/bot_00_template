@@ -13,7 +13,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 from aiogram.utils.i18n import gettext as _
 
-from database.orm_users import orm_update_locale, orm_update_status
+from database.orm_users import orm_update_locale
 
 # Инициализируем роутер уровня модуля
 other_router = Router()
@@ -77,27 +77,3 @@ async def update_locale_cmd(callback: CallbackQuery, session: AsyncSession, stat
         await callback.answer("Ausgewählt 🇩🇪 Deutsch")  # Отправляем всплывашку
         await callback.message.answer("Aktuelle Sprache \n\n 🇩🇪 Deutsch")  # Отправляем новое сообщение
         await state.update_data(locale='de')  # Обновляем локаль в контексте
-
-lang = {
-    'ru': {
-        '1': '🇺🇸 Английский',
-        '2': '🇷🇺 Русский',
-        '3': '🇩🇪 Немецкий',
-        'text': 'Выберите язык',
-        'curr': 'Выбран: \n\n 🇷🇺 Русский'
-    },
-    'en': {
-        '1': '🇺🇸 English',
-        '2': '🇷🇺 Russian',
-        '3': '🇩🇪 German',
-        'text': 'Choose language',
-        'curr': 'Selected: \n\n 🇺🇸 English'
-    },
-    'de': {
-        '1': '🇺🇸 Englisch',
-        '2': '🇷🇺 Russisch',
-        '3': '🇩🇪 Deutsch',
-        'text': 'Wählen Sie eine Sprache',
-        'curr': 'Ausgewählt: \n\n 🇩🇪 Deutsch'
-    }
-}
