@@ -13,6 +13,7 @@ from aiogram.types import TelegramObject
 class CounterMiddleware(BaseMiddleware):
     def __init__(self) -> None:
         self.counter = 0
+        # logger.info("class CounterMiddleware __init__")
 
     async def __call__(
         self,
@@ -20,6 +21,9 @@ class CounterMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any]
     ) -> Any:
+
+        # logger.info("class CounterMiddleware __call__")
+
         self.counter += 1
         data['counter'] = self.counter
         return await handler(event, data)

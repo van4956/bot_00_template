@@ -77,14 +77,21 @@ dp.workflow_data.update({'my_int_var': some_var_1, 'my_text_var': some_var_2})
 dp.update.outer_middleware(counter.CounterMiddleware())
 
 # Подключаем мидлварь для сессии БД
-dp.update.middleware(db.DataBaseSession(session_pool=session_maker))
+dp.update.outer_middleware(db.DataBaseSession(session_pool=session_maker))
 
-# Подключаем мидлварь для локали
+# Подключаем LocaleFromDBMiddleware, чтобы определить локаль из БД и передать ее в FSMContext
+dp.update.outer_middleware(locale.LocaleFromDBMiddleware())
+
+# Создаем объект I18n
 i18n = I18n(path="locales", default_locale="ru", domain="bot_00_template")
-dp.update.middleware(locale.CustomI18nMiddleware(i18n=i18n))  # кастомная мидлвари, определение локали из бд, помещение в FSMContext
-dp.update.middleware(FSMI18nMiddleware(i18n=i18n))  # получение языка на каждый апдейт, через обращение к FSMContext
+
+# Получение языка на каждый апдейт, через обращение к FSMContext
+dp.update.middleware(FSMI18nMiddleware(i18n=i18n))
+
 # dp.update.middleware(ConstI18nMiddleware(locale='ru', i18n=i18n))  # задаем локаль как принудительно устанавливаемую константу
 # dp.update.middleware(SimpleI18nMiddleware(i18n=i18n))  # сообщаем язык общения по значению поля "language_code" апдейта
+
+
 
 # Подключаем роутеры
 dp.include_router(start.start_router)
@@ -103,9 +110,16 @@ dp.include_router(other.other_router)
 # ALLOWED_UPDATES = ['message', 'edited_message', 'callback_query',]  # Отбираем определенные типы апдейтов
 ALLOWED_UPDATES = dp.resolve_used_update_types()  # Отбираем только используемые события по роутерам
 
+# Функция сработает при запуске бота
+async def on_startup():
+    print('  🕊  [       Полетели!       ]','-'*80)
+    bot_info = await bot.get_me()
+    bot_username = bot_info.username
+    await bot.send_message(chat_id = bot.home_group[0], text = f"🕊 Бот <code>@{bot_username}</code> - полетел!")
+
 # Функция сработает при остановке работы бота
 async def on_shutdown():
-    print('--☠️----   Бот лег!  ','-'*80)
+    print('  ☠️  [   Бот лег!            ]','-'*80)
     bot_info = await bot.get_me()
     bot_username = bot_info.username
     await bot.send_message(chat_id = bot.home_group[0], text = f"☠️ Бот <code>@{bot_username}</code> - лег!")
@@ -118,7 +132,8 @@ async def main() -> None:
         # await connection.run_sync(Base.metadata.drop_all)
         await connection.run_sync(Base.metadata.create_all)
 
-    # Регистрируем функцию, которая будет вызвана при остановке бота
+    # Регистрируем функцию, которая будет вызвана автоматически при запуске/остановке бота
+    dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
 
     # Пропускаем накопившиеся апдейты - удаляем вебхуки (то что бот получил пока спал)

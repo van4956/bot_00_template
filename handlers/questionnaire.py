@@ -12,8 +12,8 @@ from aiogram import Bot, Dispatcher, F, Router
 from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
-from aiogram.types import (CallbackQuery, InlineKeyboardButton,
-                           InlineKeyboardMarkup, Message, PhotoSize)
+from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message, PhotoSize
+from aiogram.utils.i18n import gettext as _
 
 # Инициализируем роутер уровня модуля
 questionnaire_router = Router()
@@ -40,9 +40,9 @@ class FSMFillForm(StatesGroup):
 @questionnaire_router.message(Command('questionnaire'), StateFilter(default_state))
 async def process_fsm_command(message: Message):
     await message.answer(
-        text='Чтобы перейти к заполнению анкеты - '
+        text=_('Чтобы перейти к заполнению анкеты - '
              'отправьте команду /fillform\n\n'
-             'Чтобы прервать заполнение анкеты - отправьте команду /cancel'
+             'Чтобы прервать заполнение анкеты - отправьте команду /cancel')
     )
 
 
@@ -51,9 +51,9 @@ async def process_fsm_command(message: Message):
 @questionnaire_router.message(Command(commands='cancel'), StateFilter(default_state))
 async def process_cancel_command(message: Message):
     await message.answer(
-        text='Отменять нечего. Вы вне машины состояний\n\n'
+        text=_('Отменять нечего. Вы вне машины состояний\n\n'
              'Чтобы перейти к заполнению анкеты - '
-             'отправьте команду /fillform'
+             'отправьте команду /fillform')
     )
 
 
@@ -62,9 +62,9 @@ async def process_cancel_command(message: Message):
 @questionnaire_router.message(Command(commands='cancel'), ~StateFilter(default_state))
 async def process_cancel_command_state(message: Message, state: FSMContext):
     await message.answer(
-        text='Вы вышли из машины состояний\n\n'
+        text=_('Вы вышли из машины состояний\n\n'
              'Чтобы снова перейти к заполнению анкеты - '
-             'отправьте команду /fillform'
+             'отправьте команду /fillform')
     )
     # Сбрасываем состояние и очищаем данные, полученные внутри состояний
     await state.clear()
@@ -74,7 +74,7 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
 # и переводить бота в состояние ожидания ввода имени
 @questionnaire_router.message(Command(commands='fillform'), StateFilter(default_state))
 async def process_fillform_command(message: Message, state: FSMContext):
-    await message.answer(text='Пожалуйста, введите ваше имя')
+    await message.answer(text=_('Пожалуйста, введите ваше имя'))
     # Устанавливаем состояние ожидания ввода имени
     await state.set_state(FSMFillForm.fill_name)
 
@@ -85,7 +85,7 @@ async def process_fillform_command(message: Message, state: FSMContext):
 async def process_name_sent(message: Message, state: FSMContext):
     # Cохраняем введенное имя в хранилище по ключу "name"
     await state.update_data(name=message.text)
-    await message.answer(text='Спасибо!\n\nА теперь введите ваш возраст')
+    await message.answer(text=_('Спасибо!\n\nА теперь введите ваш возраст'))
     # Устанавливаем состояние ожидания ввода возраста
     await state.set_state(FSMFillForm.fill_age)
 
@@ -95,10 +95,10 @@ async def process_name_sent(message: Message, state: FSMContext):
 @questionnaire_router.message(StateFilter(FSMFillForm.fill_name))
 async def warning_not_name(message: Message):
     await message.answer(
-        text='То, что вы отправили не похоже на имя\n\n'
+        text=_('То, что вы отправили не похоже на имя\n\n'
              'Пожалуйста, введите ваше имя\n\n'
              'Если вы хотите прервать заполнение анкеты - '
-             'отправьте команду /cancel')
+             'отправьте команду /cancel'))
 
 
 # Этот хэндлер будет срабатывать, если введен корректный возраст
@@ -110,15 +110,15 @@ async def process_age_sent(message: Message, state: FSMContext):
     await state.update_data(age=message.text)
     # Создаем объекты инлайн-кнопок
     male_button = InlineKeyboardButton(
-        text='Мужской ♂',
+        text=_('Мужской ♂'),
         callback_data='male'
     )
     female_button = InlineKeyboardButton(
-        text='Женский ♀',
+        text=_('Женский ♀'),
         callback_data='female'
     )
     undefined_button = InlineKeyboardButton(
-        text='🤷 Пока не ясно',
+        text=_('🤷 Пока не ясно'),
         callback_data='undefined_gender'
     )
     # Добавляем кнопки в клавиатуру (две в одном ряду и одну в другом)
@@ -130,7 +130,7 @@ async def process_age_sent(message: Message, state: FSMContext):
     markup = InlineKeyboardMarkup(inline_keyboard=keyboard)
     # Отправляем пользователю сообщение с клавиатурой
     await message.answer(
-        text='Спасибо!\n\nУкажите ваш пол',
+        text=_('Спасибо!\n\nУкажите ваш пол'),
         reply_markup=markup
     )
     # Устанавливаем состояние ожидания выбора пола
@@ -142,9 +142,9 @@ async def process_age_sent(message: Message, state: FSMContext):
 @questionnaire_router.message(StateFilter(FSMFillForm.fill_age))
 async def warning_not_age(message: Message):
     await message.answer(
-        text='Возраст должен быть целым числом от 4 до 120\n\n'
+        text=_('Возраст должен быть целым числом от 4 до 120\n\n'
              'Попробуйте еще раз\n\nЕсли вы хотите прервать '
-             'заполнение анкеты - отправьте команду /cancel'
+             'заполнение анкеты - отправьте команду /cancel')
     )
 
 
@@ -159,7 +159,7 @@ async def process_gender_press(callback: CallbackQuery, state: FSMContext):
     # чтобы у пользователя не было желания тыкать кнопки
     await callback.message.delete()
     await callback.message.answer(
-        text='Спасибо! А теперь загрузите, пожалуйста, ваше фото'
+        text=_('Спасибо! А теперь загрузите, пожалуйста, ваше фото')
     )
     # Устанавливаем состояние ожидания загрузки фото
     await state.set_state(FSMFillForm.upload_photo)
@@ -170,9 +170,9 @@ async def process_gender_press(callback: CallbackQuery, state: FSMContext):
 @questionnaire_router.message(StateFilter(FSMFillForm.fill_gender))
 async def warning_not_gender(message: Message):
     await message.answer(
-        text='Пожалуйста, пользуйтесь кнопками '
+        text=_('Пожалуйста, пользуйтесь кнопками '
              'при выборе пола\n\nЕсли вы хотите прервать '
-             'заполнение анкеты - отправьте команду /cancel'
+             'заполнение анкеты - отправьте команду /cancel')
     )
 
 
@@ -190,15 +190,15 @@ async def process_photo_sent(message: Message,
     )
     # Создаем объекты инлайн-кнопок
     secondary_button = InlineKeyboardButton(
-        text='Среднее',
+        text=_('Среднее'),
         callback_data='secondary'
     )
     higher_button = InlineKeyboardButton(
-        text='Высшее',
+        text=_('Высшее'),
         callback_data='higher'
     )
     no_edu_button = InlineKeyboardButton(
-        text='🤷 Нету',
+        text=_('🤷 Нету'),
         callback_data='no_edu'
     )
     # Добавляем кнопки в клавиатуру (две в одном ряду и одну в другом)
@@ -210,7 +210,7 @@ async def process_photo_sent(message: Message,
     markup = InlineKeyboardMarkup(inline_keyboard=keyboard)
     # Отправляем пользователю сообщение с клавиатурой
     await message.answer(
-        text='Спасибо!\n\nУкажите ваше образование',
+        text=_('Спасибо!\n\nУкажите ваше образование'),
         reply_markup=markup
     )
     # Устанавливаем состояние ожидания выбора образования
@@ -222,9 +222,9 @@ async def process_photo_sent(message: Message,
 @questionnaire_router.message(StateFilter(FSMFillForm.upload_photo))
 async def warning_not_photo(message: Message):
     await message.answer(
-        text='Пожалуйста, на этом шаге отправьте '
+        text=_('Пожалуйста, на этом шаге отправьте '
              'ваше фото\n\nЕсли вы хотите прервать '
-             'заполнение анкеты - отправьте команду /cancel'
+             'заполнение анкеты - отправьте команду /cancel')
     )
 
 
@@ -237,11 +237,11 @@ async def process_education_press(callback: CallbackQuery, state: FSMContext):
     await state.update_data(education=callback.data)
     # Создаем объекты инлайн-кнопок
     yes_news_button = InlineKeyboardButton(
-        text='Да',
+        text=_('Да'),
         callback_data='yes_news'
     )
     no_news_button = InlineKeyboardButton(
-        text='Нет, спасибо',
+        text=_('Нет, спасибо'),
         callback_data='no_news')
     # Добавляем кнопки в клавиатуру в один ряд
     keyboard: list[list[InlineKeyboardButton]] = [
@@ -252,8 +252,8 @@ async def process_education_press(callback: CallbackQuery, state: FSMContext):
     # Редактируем предыдущее сообщение с кнопками, отправляя
     # новый текст и новую клавиатуру
     await callback.message.edit_text(
-        text='Спасибо!\n\nОстался последний шаг.\n'
-             'Хотели бы вы получать новости?',
+        text=_('Спасибо!\n\nОстался последний шаг.\n'
+             'Хотели бы вы получать новости?'),
         reply_markup=markup
     )
     # Устанавливаем состояние ожидания выбора получать новости или нет
@@ -265,33 +265,35 @@ async def process_education_press(callback: CallbackQuery, state: FSMContext):
 @questionnaire_router.message(StateFilter(FSMFillForm.fill_education))
 async def warning_not_education(message: Message):
     await message.answer(
-        text='Пожалуйста, пользуйтесь кнопками при выборе образования\n\n'
+        text=_('Пожалуйста, пользуйтесь кнопками при выборе образования\n\n'
              'Если вы хотите прервать заполнение анкеты - отправьте '
-             'команду /cancel'
+             'команду /cancel')
     )
 
 
 # Этот хэндлер будет срабатывать на выбор получать или
 # не получать новости и выводить из машины состояний
-@questionnaire_router.callback_query(StateFilter(FSMFillForm.fill_wish_news),
-                   F.data.in_(['yes_news', 'no_news']))
+@questionnaire_router.callback_query(StateFilter(FSMFillForm.fill_wish_news), F.data.in_(['yes_news', 'no_news']))
 async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
     # Cохраняем данные о получении новостей по ключу "wish_news"
     await state.update_data(wish_news=callback.data == 'yes_news')
+
     # Добавляем в "базу данных" анкету пользователя
     # по ключу id пользователя
     user_dict[callback.from_user.id] = await state.get_data()
-    # Завершаем машину состояний
-    await state.clear()
+
+    # Завершаем машину состояний, но не удаляем данные из словаря FSMContext
+    await state.set_state(None)
+
     # Отправляем в чат сообщение о выходе из машины состояний
     await callback.message.edit_text(
-        text='Спасибо! Ваши данные сохранены!\n\n'
-             'Вы вышли из машины состояний'
+        text=_('Спасибо! Ваши данные сохранены!\n\n'
+             'Вы вышли из машины состояний')
     )
     # Отправляем в чат сообщение с предложением посмотреть свою анкету
     await callback.message.answer(
-        text='Чтобы посмотреть данные вашей '
-             'анкеты - отправьте команду /showdata'
+        text=_('Чтобы посмотреть данные вашей '
+             'анкеты - отправьте команду /showdata')
     )
 
 
@@ -300,9 +302,9 @@ async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
 @questionnaire_router.message(StateFilter(FSMFillForm.fill_wish_news))
 async def warning_not_wish_news(message: Message):
     await message.answer(
-        text='Пожалуйста, воспользуйтесь кнопками!\n\n'
+        text=_('Пожалуйста, воспользуйтесь кнопками!\n\n'
              'Если вы хотите прервать заполнение анкеты - '
-             'отправьте команду /cancel'
+             'отправьте команду /cancel')
     )
 
 
@@ -314,15 +316,19 @@ async def process_showdata_command(message: Message):
     if message.from_user.id in user_dict:
         await message.answer_photo(
             photo=user_dict[message.from_user.id]['photo_id'], # type: ignore
-            caption=f'Имя: {user_dict[message.from_user.id]["name"]}\n'
-                    f'Возраст: {user_dict[message.from_user.id]["age"]}\n'
-                    f'Пол: {user_dict[message.from_user.id]["gender"]}\n'
-                    f'Образование: {user_dict[message.from_user.id]["education"]}\n'
-                    f'Получать новости: {user_dict[message.from_user.id]["wish_news"]}'
+            caption=_('Имя: {name}\n'
+                       'Возраст: {age}\n'
+                        'Пол: {gender}\n'
+                        'Образование: {education}\n'
+                        'Получать новости: {wish_news}').format(name=user_dict[message.from_user.id]["name"],
+                                                                age=user_dict[message.from_user.id]["age"],
+                                                                gender=user_dict[message.from_user.id]["gender"],
+                                                                education=user_dict[message.from_user.id]["education"],
+                                                                wish_news=user_dict[message.from_user.id]["wish_news"])
         )
     else:
         # Если анкеты пользователя в базе нет - предлагаем заполнить
         await message.answer(
-            text='Вы еще не заполняли анкету. Чтобы приступить - '
-            'отправьте команду /fillform'
+            text=_('Вы еще не заполняли анкету. Чтобы приступить - '
+            'отправьте команду /fillform')
         )

@@ -163,6 +163,7 @@ async def on_successfull_payment(message: Message, state: FSMContext):
     data = await state.get_data()
     donate_info = data.get('donate_info', {})
     donate_info[t_id] = invoice_payload
+    print('donate_info: ', donate_info)
     await state.update_data(donate_info=donate_info)
 
     await message.answer(
@@ -179,7 +180,7 @@ async def on_successfull_payment(message: Message, state: FSMContext):
         # 🎉 праздник - 5046509860389126442
         # 💩 какаха - 5046589136895476101
 
-    await state.clear()
+    await state.set_state(None)
 
 
 

@@ -29,4 +29,4 @@ async def on_user_join_or_left(message: Message):
     """
     await message.delete()
 
- # Спам фильтр сообщений
+ # добавить суперСпам фильтр сообщений ХоудиХо

@@ -18,6 +18,7 @@ class DataBaseSession(BaseMiddleware):
     # Конструктор класса принимает пул сессий async_sessionmaker
     def __init__(self, session_pool: async_sessionmaker):
         self.session_pool = session_pool  # Сохраняем пул сессий для дальнейшего использования
+        # logger.info("class DataBaseSession __init__")
 
     # Асинхронный вызов промежуточного обработчика
     async def __call__(
@@ -26,6 +27,8 @@ class DataBaseSession(BaseMiddleware):
         event: TelegramObject,  # Событие в Telegram (например, сообщение)
         data: Dict[str, Any],  # Словарь с данными, ассоциированными с событием
         ) -> Any:
+
+        # logger.info("class DataBaseSession __call__")
 
         # Создание асинхронной сессии с базой данных
         async with self.session_pool() as session:
