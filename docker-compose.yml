@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  bot:
+    build: .
+    container_name: tg_bot
+    depends_on:
+      - db
+    environment:
+      - DB_POST=postgresql+asyncpg://dbUser:dbPassword@db:5432/DatabaseName
+      - BOT_TOKEN=${BOT_TOKEN}  # Переменная окружения с токеном бота
+      - OWNER=${OWNER}
+      - ADMIN_LIST=${ADMIN_LIST}
+      - HOME_GROUP=${HOME_GROUP}
+    networks:
+      - botnet
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: tg_bot_db
+    environment:
+      POSTGRES_USER: dbUser
+      POSTGRES_PASSWORD: dbPassword
+      POSTGRES_DB: DatabaseName
+    volumes:
+      - ./database/DB_postgresql:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # Пробрасываем порт для доступа извне
+    networks:
+      - botnet
+    restart: unless-stopped
+
+networks:
+  botnet:
+    driver: bridge

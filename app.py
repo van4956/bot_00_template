@@ -64,8 +64,8 @@ dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
 # GLOBAL_USER  -  для каждого юзера везде ведется своё состояние
 
 # Создаем движок бд, создаем ассинхроную сессию
-engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite
-# engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
+# engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite
+engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 # Помещаем нужные объекты в workflow_data диспетчера
@@ -104,17 +104,15 @@ ALLOWED_UPDATES = dp.resolve_used_update_types()  # Отбираем тольк�
 
 # Функция сработает при запуске бота
 async def on_startup():
-    print('  🕊  [       Полетели!       ]','-'*80)
     bot_info = await bot.get_me()
     bot_username = bot_info.username
-    await bot.send_message(chat_id = bot.home_group[0], text = f"🕊 Бот <code>@{bot_username}</code> - полетел!")
+    await bot.send_message(chat_id = bot.home_group[0], text = f"🕊  <code>@{bot_username}</code>  -  запущен!")
 
 # Функция сработает при остановке работы бота
 async def on_shutdown():
-    print('  ☠️  [   Бот лег!            ]','-'*80)
     bot_info = await bot.get_me()
     bot_username = bot_info.username
-    await bot.send_message(chat_id = bot.home_group[0], text = f"☠️ Бот <code>@{bot_username}</code> - лег!")
+    await bot.send_message(chat_id = bot.home_group[0], text = f"☠️  <code>@{bot_username}</code>  -  лег!")
 
 # Главная функция конфигурирования и запуска бота
 async def main() -> None:
@@ -125,8 +123,8 @@ async def main() -> None:
         await connection.run_sync(Base.metadata.create_all)
 
     # Регистрируем функцию, которая будет вызвана автоматически при запуске/остановке бота
-    # dp.startup.register(on_startup)
-    # dp.shutdown.register(on_shutdown)
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
 
     # Пропускаем накопившиеся апдейты - удаляем вебхуки (то что бот получил пока спал)
     await bot.delete_webhook(drop_pending_updates=True)
