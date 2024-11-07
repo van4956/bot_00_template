@@ -31,7 +31,7 @@ from config_data.config import Config, load_config
 from handlers import other, admin, product, group, questionnaire, start, owner, donate, payments
 from common.comands import private, admin_private
 from database.models import Base
-from middlewares import counter, db, locale
+from middlewares import counter, db, locale, throttle
 
 # Устанавливаем политику событийного цикла для Windows
 # if sys.platform.startswith("win"):
@@ -73,25 +73,17 @@ some_var_1 = 1
 some_var_2 = 'Some text'
 dp.workflow_data.update({'my_int_var': some_var_1, 'my_text_var': some_var_2})
 
-# Подключаем мидлварь счетчика
-dp.update.outer_middleware(counter.CounterMiddleware())
+# Подключаем мидлвари
+dp.update.outer_middleware(throttle.ThrottleMiddleware())  # тротлинг чрезмерно частых действий пользователей
+dp.update.outer_middleware(counter.CounterMiddleware())  # просто счетчик
+dp.update.outer_middleware(db.DataBaseSession(session_pool=session_maker))  # мидлварь для прокидывания сессии БД
+dp.update.outer_middleware(locale.LocaleFromDBMiddleware())  # определяем локаль из БД и передам ее в FSMContext
 
-# Подключаем мидлварь для сессии БД
-dp.update.outer_middleware(db.DataBaseSession(session_pool=session_maker))
-
-# Подключаем LocaleFromDBMiddleware, чтобы определить локаль из БД и передать ее в FSMContext
-dp.update.outer_middleware(locale.LocaleFromDBMiddleware())
-
-# Создаем объект I18n
-i18n = I18n(path="locales", default_locale="ru", domain="bot_00_template")
-
-# Получение языка на каждый апдейт, через обращение к FSMContext
-dp.update.middleware(FSMI18nMiddleware(i18n=i18n))
+i18n = I18n(path="locales", default_locale="ru", domain="bot_00_template")  # создаем объект I18n
+dp.update.middleware(FSMI18nMiddleware(i18n=i18n))  # получяем язык на каждый апдейт, через обращение к FSMContext
 
 # dp.update.middleware(ConstI18nMiddleware(locale='ru', i18n=i18n))  # задаем локаль как принудительно устанавливаемую константу
 # dp.update.middleware(SimpleI18nMiddleware(i18n=i18n))  # сообщаем язык общения по значению поля "language_code" апдейта
-
-
 
 # Подключаем роутеры
 dp.include_router(start.start_router)
@@ -133,8 +125,8 @@ async def main() -> None:
         await connection.run_sync(Base.metadata.create_all)
 
     # Регистрируем функцию, которая будет вызвана автоматически при запуске/остановке бота
-    dp.startup.register(on_startup)
-    dp.shutdown.register(on_shutdown)
+    # dp.startup.register(on_startup)
+    # dp.shutdown.register(on_shutdown)
 
     # Пропускаем накопившиеся апдейты - удаляем вебхуки (то что бот получил пока спал)
     await bot.delete_webhook(drop_pending_updates=True)

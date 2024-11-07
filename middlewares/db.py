@@ -15,10 +15,10 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 
 # Класс DataBaseSession, наследуемый от BaseMiddleware, предназначен для работы с сессиями базы данных
 class DataBaseSession(BaseMiddleware):
-    # Конструктор класса принимает пул сессий async_sessionmaker
+    # принимаем пул сессий async_sessionmaker
     def __init__(self, session_pool: async_sessionmaker):
         self.session_pool = session_pool  # Сохраняем пул сессий для дальнейшего использования
-        # logger.info("class DataBaseSession __init__")
+        logger.info("class DataBaseSession __init__")
 
     # Асинхронный вызов промежуточного обработчика
     async def __call__(

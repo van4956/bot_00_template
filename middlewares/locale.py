@@ -15,7 +15,7 @@ from database.orm_users import orm_get_locale
 class LocaleFromDBMiddleware(BaseMiddleware):
     def __init__(self):
         super().__init__()
-        # logger.info("class LocaleFromDBMiddleware __init__")
+        logger.info("class LocaleFromDBMiddleware __init__")
 
     async def __call__(self, handler, event: TelegramObject, data: dict) -> Any:
         # logger.info("class LocaleFromDBMiddleware __call__")
@@ -50,4 +50,4 @@ class LocaleFromDBMiddleware(BaseMiddleware):
             return await handler(event, data)
 
         except Exception as e:
-            logger.exception("Ошибка в middleware CustomI18nMiddleware: %s", str(e))
+            logger.exception("Ошибка в middleware LocaleFromDBMiddleware: %s", str(e))

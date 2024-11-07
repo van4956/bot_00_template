@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bot_00_template 0.1\n"
 "Report-Msgid-Bugs-To: gontscharowiwan@yandex.ru\n"
-"POT-Creation-Date: 2024-11-06 15:42+0800\n"
+"POT-Creation-Date: 2024-11-07 09:07+0800\n"
 "PO-Revision-Date: 2024-11-06 11:10+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -217,17 +217,25 @@ msgstr "Choose a language"
 msgid ""
 "Через этого бота можно купить машину времени, чтобы посмотреть, как "
 "происходит покупка и оплата в Telegram.\n"
+"\n"
 "Отправьте команду /buy, чтобы перейти к покупке.\n"
+"\n"
 "Узнать правила и положения - команда /terms_payments."
 msgstr ""
 "Through this bot, you can buy a time machine to see how purchasing and "
 "payments work in Telegram.\n"
+"\n"
 "Send the command /buy to proceed to purchase.\n"
+"\n"
 "Learn the rules and terms with the command /terms_payments.\n"
 
 #: handlers/payments.py:26
-msgid "Привет! Это демонстрация работы платежей в Telegram!\n"
-msgstr "Hello! This is a demonstration of payments in Telegram!\n"
+msgid ""
+"Привет! Это демонстрация работы платежей в Telegram!\n"
+"\n"
+msgstr ""
+"Hello! This is a demonstration of payments in Telegram!\n"
+"\n"
 
 #: handlers/payments.py:28
 msgid ""
@@ -235,12 +243,14 @@ msgid ""
 "\n"
 "<code>4242 4242 4242 4242</code>\n"
 "<code>12/24</code>  <code>000</code>\n"
+"\n"
 "Счёт для оплаты:"
 msgstr ""
 "Test mode is activated, use the following card for payment\n"
 "\n"
 "<code>4242 4242 4242 4242</code>\n"
 "<code>12/24</code>  <code>000</code>\n"
+"\n"
 "Invoice for payment:\n"
 
 #: handlers/payments.py:30
@@ -250,10 +260,12 @@ msgid ""
 "\n"
 "1. Если машина времени не будет доставлена вовремя, пожалуйста, "
 "произведите переосмысление вашей концепции времени и попробуйте снова.\n"
+"\n"
 "2. Если вы обнаружите, что машина времени не работает, будьте добры "
 "связаться с нашими сервисными мастерскими будущего с экзопланеты "
 "Trappist-1e. Они будут доступны в любом месте в период с мая 2075 года по"
 " ноябрь 4000 года нашей эры.\n"
+"\n"
 "3. Если вы хотите вернуть деньги, будьте так любезны подать заявку вчера,"
 " и мы немедленно совершим возврат."
 msgstr ""
@@ -262,57 +274,68 @@ msgstr ""
 "\n"
 "1. If the time machine is not delivered on time, please reconsider your "
 "concept of time and try again.\n"
+"\n"
 "2. If you find that the time machine is not working, kindly contact our "
 "future service workshops on exoplanet Trappist-1e. They will be available"
 " anywhere from May 2075 to November 4000 CE.\n"
+"\n"
 "3. If you wish to get a refund, kindly submit your request yesterday, and"
 " we will process it immediately."
 
 #: handlers/payments.py:35
 msgid ""
 "Хотите познакомиться со своими пра-пра-пра-пра-бабушкой и дедушкой?\n"
+"\n"
 "Сделать состояние на ставках?\n"
+"\n"
 "Пожать руку Хаммурапи и прогуляться по Висячим садам Семирамиды?\n"
+"\n"
 "Закажите Машину Времени у нас прямо сейчас!"
 msgstr ""
 "Would you like to meet your great-great-great-grandparents?\n"
+"\n"
 "Make a fortune on bets?\n"
+"\n"
 "Shake Hammurabi's hand and stroll through the Hanging Gardens of Babylon?\n"
+"\n"
 "Order a Time Machine from us right now!"
 
 #: handlers/payments.py:40
 msgid ""
 "К сожалению, наши курьеры боятся кенгуру, а телепорт не может так далеко "
-"отправлять.\nПопробуйте выбрать другой адрес!"
+"отправлять. Попробуйте выбрать другой адрес!"
 msgstr ""
 "Unfortunately, our couriers are afraid of kangaroos, and the teleport "
-"cannot send that far.\nTry choosing a different address!\n"
+"cannot send that far. Try choosing a different address!"
 
 #: handlers/payments.py:43
 msgid ""
-"Нам кажется, что указанный имейл не действителен.\nПопробуйте указать другой имейл"
+"Нам кажется, что указанный имейл не действителен.Попробуйте указать "
+"другой имейл"
 msgstr ""
-"It seems that the provided email is invalid.\nPlease try another email\n"
+"It seems that the provided email is invalid. Please try another email"
 
 #: handlers/payments.py:46
 msgid ""
-"Ура! Платеж на сумму <code>{total_amount} {currency}</code> совершен успешно! Приятного пользования новенькой машиной времени!\n"
+"Ура! Платеж на сумму <code>{total_amount} {currency}</code> совершен "
+"успешно! Приятного пользования новенькой машиной времени!\n"
 "Правила возврата средств смотрите в /terms_payments\n"
 "Купить ещё одну машину времени своему другу - /buy"
 msgstr ""
-"Hooray! Payment of <code>{total_amount} {currency}</code> was successful! Enjoy your brand-new time machine!\n"
+"Hooray! Payment of <code>{total_amount} {currency}</code> was successful!"
+" Enjoy your brand-new time machine!\n"
 "For refund terms, see /terms_payments\n"
 "To buy another time machine for your friend - /buy"
 
-#: handlers/payments.py:82 handlers/payments.py:87
+#: handlers/payments.py:83 handlers/payments.py:88
 msgid "Настоящая Машина Времени"
 msgstr "Genuine Time Machine"
 
-#: handlers/payments.py:83
+#: handlers/payments.py:84
 msgid "Подарочная упаковка"
 msgstr "Gift wrapping"
 
-#: handlers/payments.py:84
+#: handlers/payments.py:85
 msgid "Товары"
 msgstr "Products"
 
@@ -558,7 +581,7 @@ msgstr ""
 "\n"
 "If you want to cancel filling out the form, send the command /cancel"
 
-#: handlers/questionnaire.py:288
+#: handlers/questionnaire.py:290
 msgid ""
 "Спасибо! Ваши данные сохранены!\n"
 "\n"
@@ -568,11 +591,11 @@ msgstr ""
 "\n"
 "You have exited the state machine"
 
-#: handlers/questionnaire.py:293
+#: handlers/questionnaire.py:295
 msgid "Чтобы посмотреть данные вашей анкеты - отправьте команду /showdata"
 msgstr "To view your form data, send the command /showdata"
 
-#: handlers/questionnaire.py:303
+#: handlers/questionnaire.py:305
 msgid ""
 "Пожалуйста, воспользуйтесь кнопками!\n"
 "\n"
@@ -582,7 +605,7 @@ msgstr ""
 "\n"
 "If you want to cancel filling out the form, send the command /cancel"
 
-#: handlers/questionnaire.py:317
+#: handlers/questionnaire.py:319
 msgid ""
 "Имя: {name}\n"
 "Возраст: {age}\n"
@@ -596,7 +619,7 @@ msgstr ""
 "Education: {education}\n"
 "Receive news: {wish_news}"
 
-#: handlers/questionnaire.py:330
+#: handlers/questionnaire.py:332
 msgid "Вы еще не заполняли анкету. Чтобы приступить - отправьте команду /fillform"
 msgstr "You haven't filled out the form yet. To start, send the command /fillform"
 
