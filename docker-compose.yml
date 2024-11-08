@@ -82,7 +82,7 @@ services:
     ports:
       - "3000:3000" # Публикуем порт 3000 для доступа к Grafana через браузер
     volumes:
-      - ./database/grafana:/var/lib/grafana # Сохраняем данные Grafana на локальном диске
+      - grafana_data:/var/lib/grafana # Сохраняем данные Grafana в Docker volume
     networks:
       - botnet # Подключение к сети botnet
     restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
@@ -90,3 +90,7 @@ services:
 networks:
   botnet:
     driver: bridge # Используем драйвер bridge для создания сети
+
+volumes:
+  grafana_data:
+    driver: local # Используем локальный драйвер для хранения данных Grafana
