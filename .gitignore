@@ -112,7 +112,6 @@ celerybeat.pid
 
 # Local configuration files
 *.env
-.env.example
 
 # Ignore database dumps
 *.db
