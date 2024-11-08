@@ -1,4 +1,7 @@
 # source venv/Scripts/activate
+# docker-compose up -d
+# docker-compose ps
+# docker-compose down
 # ctrl + B                        -  запуск скрипта из любого файла проекта
 # ctrl + I                        -  варианты эмодзи
 
@@ -41,9 +44,8 @@ from middlewares import counter, db, locale, throttle
 config: Config = load_config()
 
 # Инициализируем объект хранилища
-storage = MemoryStorage()  # хранится исключительно в оперативной памяти, при перезапуске бота все данные стираются (для тестов и разработки)
-# redis = Redis(host='localhost')  # инициализируем Redis
-# storage = RedisStorage(redis=redis)  # хранится на отдельном сервере
+# storage = RedisStorage(redis=Redis(host='redis', port=6379))  # данные хранятся на отдельном сервере
+storage = MemoryStorage()  # данные хранятся в оперативной памяти, при перезапуске всё стирается (для тестов и разработки)
 
 logger.info('Инициализируем бот и диспетчер')
 bot = Bot(token=config.tg_bot.token,
@@ -64,8 +66,8 @@ dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
 # GLOBAL_USER  -  для каждого юзера везде ведется своё состояние
 
 # Создаем движок бд, создаем ассинхроную сессию
-# engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite
-engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
+engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite (для тестов и разработки)
+# engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 # Помещаем нужные объекты в workflow_data диспетчера

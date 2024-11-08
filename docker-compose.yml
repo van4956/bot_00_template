@@ -2,35 +2,60 @@ version: '3.9'
 
 services:
   bot:
-    build: .
-    container_name: tg_bot
+    build: . # Строим образ из текущей директории
+    container_name: container_bot
     depends_on:
-      - db
+      - db # Контейнер бота зависит от базы данных (db)
+      - redis # Контейнер бота зависит от Redis
     environment:
-      - DB_POST=postgresql+asyncpg://dbUser:dbPassword@db:5432/DatabaseName
-      - BOT_TOKEN=${BOT_TOKEN}  # Переменная окружения с токеном бота
-      - OWNER=${OWNER}
-      - ADMIN_LIST=${ADMIN_LIST}
-      - HOME_GROUP=${HOME_GROUP}
+      - DB_POST=postgresql+asyncpg://root:pass@db:5432/postgres # Параметры подключения к базе данных PostgreSQL
+      # - BOT_TOKEN=${BOT_TOKEN} # Токен бота, передаваемый через переменную окружения
+      # - OWNER=${OWNER} # Идентификатор владельца бота
+      # - ADMIN_LIST=${ADMIN_LIST} # Список администраторов бота
+      # - HOME_GROUP=${HOME_GROUP} # Идентификатор основной группы бота
+      - REDIS_HOST=redis # Хост для подключения к Redis
+      - REDIS_PORT=6379 # Порт для подключения к Redis
     networks:
-      - botnet
-    restart: unless-stopped
+      - botnet # Подключение к сети botnet
+    restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
 
   db:
-    image: postgres:15
-    container_name: tg_bot_db
+    image: postgres:15 # Образ PostgreSQL версии 15
+    container_name: container_bot_db
     environment:
-      POSTGRES_USER: dbUser
-      POSTGRES_PASSWORD: dbPassword
-      POSTGRES_DB: DatabaseName
+      POSTGRES_USER: root # Пользователь базы данных PostgreSQL
+      POSTGRES_PASSWORD: pass # Пароль для пользователя базы данных
+      POSTGRES_DB: postgres # Имя базы данных
     volumes:
-      - ./database/DB_postgresql:/var/lib/postgresql/data
+      - ./database/postgres:/var/lib/postgresql/data # Сохраняем данные базы данных на локальном диске
     ports:
-      - "5432:5432"  # Пробрасываем порт для доступа извне
+      - "5432:5432" # Публикуем порт 5432 для доступа к базе данных
     networks:
-      - botnet
-    restart: unless-stopped
+      - botnet # Подключение к сети botnet
+    restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
+
+  redis:
+    image: redis:alpine # Образ Redis версии Alpine
+    container_name: container_redis # Имя контейнера для Redis
+    ports:
+      - "6379:6379" # Публикуем порт 6379 для доступа к Redis
+    networks:
+      - botnet # Подключение к сети botnet
+    restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
+
+
+  pgadmin:
+    image: dpage/pgadmin4 # Образ pgAdmin для управления базой данных PostgreSQL
+    container_name: container_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=noemail@noemail.com # Адрес электронной почты по умолчанию для входа в pgAdmin
+      - PGADMIN_DEFAULT_PASSWORD=root # Пароль по умолчанию для входа в pgAdmin
+    ports:
+      - "5050:80" # Публикуем порт 5050 для доступа к pgAdmin через браузер
+    networks:
+      - botnet # Подключение к сети botnet
+    restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
 
 networks:
   botnet:
-    driver: bridge
+    driver: bridge # Используем драйвер bridge для создания сети

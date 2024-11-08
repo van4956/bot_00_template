@@ -31,8 +31,7 @@ async def process_help_command(message: Message):
                '/payments - оплата товаров\n'
                '/questionnaire - анкетирование\n\n'
                '/donate - отправить донат\n'
-               '/refund - возврат доната\n\n'
-               '/ping')
+               '/refund - возврат доната')
     )
 
 
