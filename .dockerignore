@@ -1,9 +1,42 @@
+# Исключаем виртуальные окружения и временные файлы
 .venv
-.vscode
-__pycache__
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Исключаем данные IDE и редакторов кода
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Исключаем кэш Python и другие временные файлы
+__pycache__/
+*.py[cod]
+*$py.class
+*.bak
+*.swp
+*.tmp
+*.log
+
+# Исключаем Dockerfile и файлы, которые не нужны внутри контейнера
 .dockerignore
 Dockerfile
+
+# Исключаем файлы для документации и лицензий (не нужны в контейнере)
 README.md
 README.Docker.md
-*.pyc
-*.tar
+LICENSE
+
+# Исключаем локальные базы данных и результаты компиляции
+database/grafana/
+database/influxdb/
+database/postgres/
+*.db
+
+# Исключаем данные сессии или другие временные файлы
+.mypy_cache/
+.tox/
+.nox/
