@@ -1,7 +1,3 @@
-# source venv/Scripts/activate
-# docker-compose up -d
-# docker-compose ps
-# docker-compose down
 # ctrl + B                        -  запуск скрипта из любого файла проекта
 # ctrl + I                        -  варианты эмодзи
 
@@ -17,17 +13,22 @@ sqlalchemy_logger.setLevel(logging.INFO)  # Устанавливаем нужн�
 sqlalchemy_logger.propagate = True  # Отключаем передачу сообщений основному логгеру, чтобы не задваивать их
 
 import asyncio
+import datetime
 import sys
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.storage.redis import RedisStorage #, Redis
+from aiogram.fsm.storage.redis import RedisStorage
 from redis.asyncio.client import Redis
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.utils.i18n import ConstI18nMiddleware, I18n, SimpleI18nMiddleware, FSMI18nMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from influxdb_client.client.write.point import Point
+from influxdb_client.client.influxdb_client import InfluxDBClient
+# from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 from config_data.config import Config, load_config
 
@@ -36,16 +37,54 @@ from common.comands import private, admin_private
 from database.models import Base
 from middlewares import counter, db, locale, throttle
 
+
 # Устанавливаем политику событийного цикла для Windows
 # if sys.platform.startswith("win"):
 #     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
+
+# Режим запуска бота
+docker = 1
+
 # Загружаем конфиг в переменную config
 config: Config = load_config()
 
+# Инициализируем функцию для сбора аналитики, взаимодействуем с InfluxDB и Grafana
+if docker == 1:
+    async def analytics(user_id: int, command_name: str):
+        try:
+            # Настройка клиента для подключения к InfluxDB
+            client = InfluxDBClient(url=config.influx.url, token=config.influx.token, org=config.influx.org)
+            write_api = client.write_api(write_options=SYNCHRONOUS)
+            current_time = datetime.now(datetime.timezone.utc).isoformat()
+
+            # Создаем Point для отправки в InfluxDB
+            point = (
+                    Point("bot_command_usage")
+                    .tag("command", command_name)
+                    .tag("user_id", user_id)
+                    .time(current_time)
+                    .field("count", 1)
+                    )
+
+            # Записываем point в InfluxDB
+            write_api.write(bucket="mybucket", org="myorg", record=point)
+
+        except Exception as e:
+            logging.error(f"InfluxDB write error: {str(e)}")
+
+        finally:
+            client.close()
+else:
+    async def analytics(user_id: int, command_name: str):
+        pass
+
+
 # Инициализируем объект хранилища
-# storage = RedisStorage(redis=Redis(host='redis', port=6379))  # данные хранятся на отдельном сервере
-storage = MemoryStorage()  # данные хранятся в оперативной памяти, при перезапуске всё стирается (для тестов и разработки)
+if docker == 1:
+    storage = RedisStorage(redis=Redis(host='redis', port=6379))  # данные хранятся на отдельном сервере Redis
+else:
+    storage = MemoryStorage()  # данные хранятся в оперативной памяти, при перезапуске всё стирается (для тестов и разработки)
 
 logger.info('Инициализируем бот и диспетчер')
 bot = Bot(token=config.tg_bot.token,
@@ -58,6 +97,7 @@ bot = Bot(token=config.tg_bot.token,
 bot.owner = config.tg_bot.owner
 bot.admin_list = config.tg_bot.admin_list
 bot.home_group = config.tg_bot.home_group
+bot.work_group = config.tg_bot.work_group
 
 
 dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
@@ -65,15 +105,21 @@ dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
 # USER_IN_CHAT  -  для каждого юзера, в каждом чате ведется своя запись состояний (по дефолту)
 # GLOBAL_USER  -  для каждого юзера везде ведется своё состояние
 
-# Создаем движок бд, создаем ассинхроную сессию
-engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite (для тестов и разработки)
-# engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
+# Создаем движок бд
+if docker == 1:
+    engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
+else:
+    engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite (для тестов и разработки)
+
+# Создаем ассинхроную сессию
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 # Помещаем нужные объекты в workflow_data диспетчера
 some_var_1 = 1
 some_var_2 = 'Some text'
-dp.workflow_data.update({'my_int_var': some_var_1, 'my_text_var': some_var_2})
+dp.workflow_data.update({'my_int_var': some_var_1,
+                         'my_text_var': some_var_2,
+                         'analytics': analytics})
 
 # Подключаем мидлвари
 dp.update.outer_middleware(throttle.ThrottleMiddleware())  # тротлинг чрезмерно частых действий пользователей

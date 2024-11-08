@@ -11,6 +11,7 @@ from aiogram.filters import Command, CommandStart, CommandObject
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import Message
 from aiogram.filters import ChatMemberUpdatedFilter, KICKED, MEMBER
+from aiogram.fsm.context import FSMContext
 from aiogram.types import ChatMemberUpdated
 from aiogram.utils.i18n import gettext as _
 
@@ -27,7 +28,7 @@ def start_keyboard():
 
 # Команда /start
 @start_router.message(CommandStart())
-async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
+async def start_cmd(message: Message, session: AsyncSession, bot: Bot, state: FSMContext):
     user_id = message.from_user.id
     user_name = message.from_user.username if message.from_user.username else 'None'
     full_name = message.from_user.full_name if message.from_user.full_name else 'None'
@@ -52,6 +53,8 @@ async def start_cmd(message: Message, session: AsyncSession, bot: Bot):
 
     await message.answer(_('Бот активирован!'), reply_markup=keyboard.del_kb)
 
+    analytics = state.workflow_data['analytics']
+    await analytics(user_id=user_id, command_name="/start")
 
 # Этот хэндлер будет срабатывать на блокировку бота пользователем
 @start_router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))

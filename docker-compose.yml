@@ -7,14 +7,15 @@ services:
     depends_on:
       - db # Контейнер бота зависит от базы данных (db)
       - redis # Контейнер бота зависит от Redis
+      - influxdb # Контейнер бота зависит от InfluxDB
     environment:
       - DB_POST=postgresql+asyncpg://root:pass@db:5432/postgres # Параметры подключения к базе данных PostgreSQL
-      # - BOT_TOKEN=${BOT_TOKEN} # Токен бота, передаваемый через переменную окружения
-      # - OWNER=${OWNER} # Идентификатор владельца бота
-      # - ADMIN_LIST=${ADMIN_LIST} # Список администраторов бота
-      # - HOME_GROUP=${HOME_GROUP} # Идентификатор основной группы бота
       - REDIS_HOST=redis # Хост для подключения к Redis
       - REDIS_PORT=6379 # Порт для подключения к Redis
+      - INFLUXDB_URL=http://influxdb:8086 # URL для подключения к InfluxDB
+      - INFLUXDB_TOKEN=mytoken # Токен для доступа к InfluxDB
+      - INFLUXDB_ORG=myorg # Организация в InfluxDB
+      - INFLUXDB_BUCKET=mybucket # Бакет в InfluxDB
     networks:
       - botnet # Подключение к сети botnet
     restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
@@ -52,6 +53,36 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=root # Пароль по умолчанию для входа в pgAdmin
     ports:
       - "5050:80" # Публикуем порт 5050 для доступа к pgAdmin через браузер
+    networks:
+      - botnet # Подключение к сети botnet
+    restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
+
+  influxdb:
+    image: influxdb:2.7 # Образ InfluxDB версии 2.0
+    container_name: container_influxdb
+    environment:
+      - INFLUXDB_ADMIN_USER=admin # Администратор InfluxDB
+      - INFLUXDB_ADMIN_PASSWORD=pass # Пароль администратора InfluxDB
+      - INFLUXDB_BUCKET=mybucket # Бакет для хранения данных
+      - INFLUXDB_ORG=myorg # Название организации в InfluxDB
+    volumes:
+      - ./database/influxdb:/var/lib/influxdb2 # Сохраняем данные InfluxDB на локальном диске
+    ports:
+      - "8086:8086" # Публикуем порт 8086 для доступа к InfluxDB
+    networks:
+      - botnet # Подключение к сети botnet
+    restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
+
+  grafana:
+    image: grafana/grafana # Образ Grafana для визуализации данных
+    container_name: container_grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin # Администратор Grafana
+      - GF_SECURITY_ADMIN_PASSWORD=pass # Пароль администратора Grafana
+    ports:
+      - "3000:3000" # Публикуем порт 3000 для доступа к Grafana через браузер
+    volumes:
+      - ./database/grafana:/var/lib/grafana # Сохраняем данные Grafana на локальном диске
     networks:
       - botnet # Подключение к сети botnet
     restart: unless-stopped # Автоматический перезапуск контейнера, если он остановится
