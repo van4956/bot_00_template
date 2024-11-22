@@ -4,12 +4,12 @@
 from aiogram.types import BotCommand
 
 private = [
-    BotCommand(command='start',description='restart'),
+    BotCommand(command='start',description='start'),
     BotCommand(command='help',description='help'),
 ]
 
 admin_private = [
-    BotCommand(command='start',description='restart'),
+    BotCommand(command='start',description='start'),
     BotCommand(command='help',description='help'),
     BotCommand(command='ping',description='ping'),
 ]

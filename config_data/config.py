@@ -29,6 +29,14 @@ class DataBase:
     db_lite: str
 
 @dataclass
+class Redis:
+    """
+    Класс для хранения информации о Redis
+    """
+    host: str
+    port: int
+
+@dataclass
 class InfluxDB:
     """
     Класс для хранения информации о InfluxDB
@@ -41,6 +49,14 @@ class InfluxDB:
     org: str
 
 @dataclass
+class Grafana:
+    """
+    Класс для хранения информации о Grafana
+    """
+    admin: str
+    password: str
+
+@dataclass
 class Config:
     """
     Основной класс конфигурации всего приложения
@@ -48,7 +64,8 @@ class Config:
     tg_bot: TgBot
     db: DataBase
     influx: InfluxDB
-
+    redis: Redis
+    grafana: Grafana
 
 # Функция загрузки конфигурации из файла окружения .env
 def load_config(path: str | None = None) -> Config:
@@ -60,17 +77,32 @@ def load_config(path: str | None = None) -> Config:
     home_group = map(int, env('HOME_GROUP').split(','))
     work_group = map(int, env('WORK_GROUP').split(','))
 
-    return Config(tg_bot=TgBot(token=env('BOT_TOKEN'),
-                               owner=list(owner),
-                               admin_list=list(admin_list),
-                               home_group=list(home_group),
-                               work_group=list(work_group)),
-                  db=DataBase(db_post=env('DB_POST'),
-                              db_lite=env('DB_LITE')),
-                  influx=InfluxDB(admin=env('INFLUXDB_ADMIN_USER'),
-                                  password=env('INFLUXDB_ADMIN_PASSWORD'),
-                                  url=env('INFLUXDB_URL'),
-                                  token=env('INFLUXDB_TOKEN'),
-                                  bucket=env('INFLUXDB_BUCKET'),
-                                  org=env('INFLUXDB_ORG'))
-                                  )
+    return Config(
+        tg_bot=TgBot(
+            token=env('BOT_TOKEN'),
+            owner=list(owner),
+            admin_list=list(admin_list),
+            home_group=list(home_group),
+            work_group=list(work_group)
+            ),
+        db=DataBase(
+            db_post=env('DB_POST'),
+            db_lite=env('DB_LITE')
+            ),
+        redis=Redis(
+            host=env('REDIS_HOST'),
+            port=env('REDIS_PORT')
+            ),
+        influx=InfluxDB(
+            admin=env('INFLUXDB_ADMIN_USER'),
+            password=env('INFLUXDB_ADMIN_PASSWORD'),
+            url=env('INFLUXDB_URL'),
+            token=env('INFLUXDB_TOKEN'),
+            bucket=env('INFLUXDB_BUCKET'),
+            org=env('INFLUXDB_ORG')
+            ),
+        grafana=Grafana(
+            admin=env('GF_SECURITY_ADMIN_USER'),
+            password=env('GF_SECURITY_ADMIN_PASSWORD')
+            )
+        )

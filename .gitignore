@@ -1,7 +1,3 @@
-__pycache__/
-*.py[cod]
-*$py.class
-
 .env
 .venv
 env/
@@ -18,8 +14,6 @@ venv.bak/
 
 .mypy_cache/
 
-*.mo
-*.pot
 
 # Исключаем все файлы в папках баз данных, но оставляем сами папки
 /database/influxdb/*
@@ -30,7 +24,6 @@ venv.bak/
 
 /database/grafana/*
 !/database/grafana/.gitkeep
-
 
 # Byte-compiled / optimized / compiled Python files
 __pycache__/
@@ -92,7 +85,6 @@ coverage.xml
 
 # Django stuff:
 *.log
-*.pot
 *.pyc
 db.sqlite3
 media/
@@ -116,10 +108,6 @@ celerybeat.pid
 # Ignore database dumps
 *.db
 
-# Ignore compiled locales
-*.mo
-*.pot
-
 # Ansible
 *.retry
 
@@ -129,3 +117,7 @@ celerybeat.pid
 *.swp
 *.tmp
 .DS_Store
+
+# Исключаем файл с содержимым
+bot_04_copilot_v2_contents.txt
+/bot_04_copilot_v2_contents.txt

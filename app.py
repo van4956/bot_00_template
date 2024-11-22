@@ -13,8 +13,7 @@ sqlalchemy_logger.setLevel(logging.INFO)  # Устанавливаем нужн�
 sqlalchemy_logger.propagate = True  # Отключаем передачу сообщений основному логгеру, чтобы не задваивать их
 
 import asyncio
-import datetime
-import sys
+from datetime import datetime, timezone
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.fsm.strategy import FSMStrategy
@@ -27,7 +26,6 @@ from aiogram.utils.i18n import ConstI18nMiddleware, I18n, SimpleI18nMiddleware, 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from influxdb_client.client.write.point import Point
 from influxdb_client.client.influxdb_client import InfluxDBClient
-# from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from config_data.config import Config, load_config
@@ -38,53 +36,48 @@ from database.models import Base
 from middlewares import counter, db, locale, throttle
 
 
-# Устанавливаем политику событийного цикла для Windows
-# if sys.platform.startswith("win"):
-#     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-
-# Режим запуска бота
+# Режим запуска: docker == 1 - запуск в docker, docker == 0 - запуск локально
 docker = 1
 
 # Загружаем конфиг в переменную config
 config: Config = load_config()
 
 # Инициализируем функцию для сбора аналитики, взаимодействуем с InfluxDB и Grafana
-if docker == 1:
-    async def analytics(user_id: int, command_name: str):
+async def analytics(user_id: int, command_name: str, category_name: str):
+    """Функция для сбора аналитики, взаимодействуем с InfluxDB и Grafana"""
+    if docker == 1:
         try:
             # Настройка клиента для подключения к InfluxDB
             client = InfluxDBClient(url=config.influx.url, token=config.influx.token, org=config.influx.org)
             write_api = client.write_api(write_options=SYNCHRONOUS)
-            current_time = datetime.now(datetime.timezone.utc).isoformat()
+            current_time = datetime.now(timezone.utc)
 
-            # Создаем Point для отправки в InfluxDB
+            # Создаем Point для отправки в InfluxDB с временной меткой
             point = (
                     Point("bot_command_usage")
+                    .tag("category", category_name)
                     .tag("command", command_name)
                     .tag("user_id", user_id)
+                    .tag("ping", "ping")
                     .time(current_time)
-                    .field("count", 1)
+                    .field("value", 1)
                     )
 
             # Записываем point в InfluxDB
-            write_api.write(bucket="mybucket", org="myorg", record=point)
+            write_api.write(bucket=config.influx.bucket, org=config.influx.org, record=point)
 
         except Exception as e:
             logging.error(f"InfluxDB write error: {str(e)}")
-
         finally:
             client.close()
-else:
-    async def analytics(user_id: int, command_name: str):
+    else: # если docker == 0
         pass
 
 
 # Инициализируем объект хранилища
-if docker == 1:
-    storage = RedisStorage(redis=Redis(host='redis', port=6379))  # данные хранятся на отдельном сервере Redis
-else:
-    storage = MemoryStorage()  # данные хранятся в оперативной памяти, при перезапуске всё стирается (для тестов и разработки)
+if docker == 1: storage = RedisStorage(redis=Redis(host=config.redis.host, port=config.redis.port))  # данные хранятся на отдельном сервере Redis
+else: storage = MemoryStorage()  # данные хранятся в оперативной памяти, при перезапуске всё стирается (для тестов и разработки)
 
 logger.info('Инициализируем бот и диспетчер')
 bot = Bot(token=config.tg_bot.token,
@@ -100,16 +93,13 @@ bot.home_group = config.tg_bot.home_group
 bot.work_group = config.tg_bot.work_group
 
 
-dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT,
-                storage=storage)
+dp = Dispatcher(fsm_strategy=FSMStrategy.USER_IN_CHAT, storage=storage)
 # USER_IN_CHAT  -  для каждого юзера, в каждом чате ведется своя запись состояний (по дефолту)
 # GLOBAL_USER  -  для каждого юзера везде ведется своё состояние
 
 # Создаем движок бд
-if docker == 1:
-    engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
-else:
-    engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite (для тестов и разработки)
+if docker == 1: engine = create_async_engine(config.db.db_post, echo=False)  # PostgreSQL
+else: engine = create_async_engine(config.db.db_lite, echo=False)  # SQLite (для тестов и разработки)
 
 # Создаем ассинхроную сессию
 session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
@@ -123,15 +113,14 @@ dp.workflow_data.update({'my_int_var': some_var_1,
 
 # Подключаем мидлвари
 dp.update.outer_middleware(throttle.ThrottleMiddleware())  # тротлинг чрезмерно частых действий пользователей
-dp.update.outer_middleware(counter.CounterMiddleware())  # просто счетчик
+dp.update.outer_middleware(counter.CounterMiddleware())  # простой счетчик
 dp.update.outer_middleware(db.DataBaseSession(session_pool=session_maker))  # мидлварь для прокидывания сессии БД
-dp.update.outer_middleware(locale.LocaleFromDBMiddleware())  # определяем локаль из БД и передам ее в FSMContext
-
+dp.update.outer_middleware(locale.LocaleFromDBMiddleware(workflow_data=dp.workflow_data))  # определяем локаль из БД и передам ее в FSMContext
 i18n = I18n(path="locales", default_locale="ru", domain="bot_00_template")  # создаем объект I18n
 dp.update.middleware(FSMI18nMiddleware(i18n=i18n))  # получяем язык на каждый апдейт, через обращение к FSMContext
 
 # dp.update.middleware(ConstI18nMiddleware(locale='ru', i18n=i18n))  # задаем локаль как принудительно устанавливаемую константу
-# dp.update.middleware(SimpleI18nMiddleware(i18n=i18n))  # сообщаем язык общения по значению поля "language_code" апдейта
+# dp.update.middleware(SimpleI18nMiddleware(i18n=i18n))  # задаем локаль по значению поля "language_code" апдейта
 
 # Подключаем роутеры
 dp.include_router(start.start_router)
@@ -154,13 +143,13 @@ ALLOWED_UPDATES = dp.resolve_used_update_types()  # Отбираем тольк�
 async def on_startup():
     bot_info = await bot.get_me()
     bot_username = bot_info.username
-    await bot.send_message(chat_id = bot.home_group[0], text = f"🕊  <code>@{bot_username}</code>  -  запущен!")
+    await bot.send_message(chat_id = bot.home_group[0], text = f"🤖  <code>@{bot_username}</code>  -  запущен!")
 
 # Функция сработает при остановке работы бота
 async def on_shutdown():
     bot_info = await bot.get_me()
     bot_username = bot_info.username
-    await bot.send_message(chat_id = bot.home_group[0], text = f"☠️  <code>@{bot_username}</code>  -  лег!")
+    await bot.send_message(chat_id = bot.home_group[0], text = f"☠️  <code>@{bot_username}</code>  -  деактивирован!")
 
 # Главная функция конфигурирования и запуска бота
 async def main() -> None:

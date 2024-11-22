@@ -14,6 +14,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message, PhotoSize
 from aiogram.utils.i18n import gettext as _
+from icecream import ic as debug
+
+# debug.disable()  # Отключить вывод
+# debug.enable()  # Включить вывод
+debug.configureOutput(includeContext=True, prefix=' >>> Debag >>> ')
 
 # Инициализируем роутер уровня модуля
 questionnaire_router = Router()
@@ -67,7 +72,10 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
              'отправьте команду /fillform')
     )
     # Сбрасываем состояние и очищаем данные, полученные внутри состояний
-    await state.clear()
+    # await state.clear()
+
+    # Завершаем машину состояний, но не удаляем данные из словаря FSMContext
+    await state.set_state(None)
 
 
 # Этот хэндлер будет срабатывать на команду /fillform
@@ -281,6 +289,10 @@ async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
     # Добавляем в "базу данных" анкету пользователя
     # по ключу id пользователя
     user_dict[callback.from_user.id] = await state.get_data()
+    debug(user_dict)
+
+    users = await state.get_data()
+    debug(users)
 
     # Завершаем машину состояний, но не удаляем данные из словаря FSMContext
     await state.set_state(None)
@@ -311,7 +323,7 @@ async def warning_not_wish_news(message: Message):
 # Этот хэндлер будет срабатывать на отправку команды /showdata
 # и отправлять в чат данные анкеты, либо сообщение об отсутствии данных
 @questionnaire_router.message(Command(commands='showdata'), StateFilter(default_state))
-async def process_showdata_command(message: Message):
+async def process_showdata_command(message: Message, state: FSMContext):
     # Отправляем пользователю анкету, если она есть в "базе данных"
     if message.from_user.id in user_dict:
         await message.answer_photo(
@@ -332,3 +344,7 @@ async def process_showdata_command(message: Message):
             text=_('Вы еще не заполняли анкету. Чтобы приступить - '
             'отправьте команду /fillform')
         )
+
+    data = await state.get_data()
+    debug(data)
+    await message.answer(str(data))

@@ -5,9 +5,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.info("Загружен модуль: %s", __name__)
 
+from icecream import ic
+ic.configureOutput(includeContext=True, prefix=' >>> Debug >>> ')
+
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from database.models import Users
 
 

@@ -12,20 +12,20 @@ from cachetools import TTLCache
 
 # Создаём кэш для троттлинга
 cache = TTLCache(maxsize=float('inf'),  # неограниченное количество пользователей в кэше
-                 ttl=1  # время хранения каждого пользователя в кэше (1 секунда)
+                 ttl=0.5  # время хранения каждого пользователя в кэше (0.5 секунды)
                  )
 
 # Мидлварь для троттлинга (отслеживание чрезмерных действий пользователей)
 class ThrottleMiddleware(BaseMiddleware):
+    """
+    Мидлварь для троттлинга (отслеживание чрезмерных действий пользователей)
+    """
     def __init__(self) -> None:
         super().__init__()
         logger.info("class ThrottleMiddleware __init__")
 
     async def __call__(self, handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]], event: TelegramObject, data: Dict[str, Any]) -> Any:
-        # logger.info("class ThrottleMiddleware __call__")
         try:
-            # print('--- event: ', event)
-
             user_id = None
 
             # Проверяем, является ли событие сообщением от пользователя
@@ -52,3 +52,4 @@ class ThrottleMiddleware(BaseMiddleware):
 
         except Exception as e:
             logger.exception("Ошибка в middleware ThrottleMiddleware: %s", str(e))
+            return await handler(event, data)
