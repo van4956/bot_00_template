@@ -13,7 +13,9 @@ from aiogram import Bot
 
 class IsOwnerFilter(BaseFilter):
     """
-    Фильтр, является ли пользователь владельцем бота.
+    Фильтр, проверяет является ли пользователь владельцем бота.
+    Принимает параметр is_owner: true/false.
+    Возвращает True, если пользователь в списке владельцев.
     """
     def __init__(self, is_owner: bool):
         self.is_owner = is_owner

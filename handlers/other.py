@@ -27,7 +27,7 @@ async def process_help_command(message: Message):
         text=_('Доступные команды:\n\n'
                '/start - перезапустить бота\n'
                '/help - справка по работе бота\n'
-               '/language - сменить язык\n\n'
+               '/lang - сменить язык\n\n'
                '/product - выборт товаров\n'
                '/payments - оплата товаров\n'
                '/questionnaire - анкетирование\n\n'
@@ -37,7 +37,7 @@ async def process_help_command(message: Message):
 
 
 # Клавиатура выбора языка
-def get_keyboard():
+def keyboard_language():
     button_1 = InlineKeyboardButton(text=_('🇺🇸 Английский'), callback_data='locale_en')
     button_2 = InlineKeyboardButton(text=_('🇷🇺 Русский'), callback_data='locale_ru')
     button_3 = InlineKeyboardButton(text=_('🇩🇪 Немецкий'), callback_data='locale_de')
@@ -48,11 +48,11 @@ def get_keyboard():
 
 
 # Это хендлер будет срабатывать на команду locale
-@other_router.message(Command('language'))
+@other_router.message(Command('lang'))
 async def locale_cmd(message: Message):
     await message.answer(_("Настройки языка"), reply_markup=keyboard.del_kb)
     await message.answer(text=_('Выберите язык'),
-                         reply_markup=get_keyboard())
+                         reply_markup=keyboard_language())
 
 
 @other_router.callback_query(F.data.startswith("locale_"))

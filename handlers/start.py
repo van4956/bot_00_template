@@ -25,10 +25,6 @@ from common import keyboard
 # Инициализируем роутер уровня модуля
 start_router = Router()
 
-# Функция стартовой клавиатуры
-def start_keyboard():
-    return keyboard.get_keyboard(_("кнопка 1"), _("кнопка 2"), _("кнопка 3"), _("кнопка 4"), sizes=(2, 2, ), placeholder='⬇️')
-
 # Команда /start
 @start_router.message(CommandStart())
 async def start_cmd(message: Message, session: AsyncSession, bot: Bot, state: FSMContext, workflow_data: dict):

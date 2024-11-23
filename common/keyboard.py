@@ -7,6 +7,7 @@ logger.info("Загружен модуль: %s", __name__)
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, KeyboardButtonPollType
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram.utils.i18n import gettext as _
 
 
 # Удаление клавиатуры
@@ -47,3 +48,8 @@ def get_keyboard(
 
     return keyboard.adjust(*sizes).as_markup(resize_keyboard=True, # сделать кнопки поменьше
                                              input_field_placeholder=placeholder) # в поле ввода выводим текст placeholder
+
+
+# Функция стартовой клавиатуры
+def start_keyboard():
+    return get_keyboard(_("кнопка 1"), _("кнопка 2"), _("кнопка 3"), _("кнопка 4"), sizes=(2, 2, ), placeholder='⬇️')

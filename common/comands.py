@@ -11,5 +11,5 @@ private = [
 admin_private = [
     BotCommand(command='start',description='start'),
     BotCommand(command='help',description='help'),
-    BotCommand(command='ping',description='ping'),
+    BotCommand(command='admin',description='admin'),
 ]

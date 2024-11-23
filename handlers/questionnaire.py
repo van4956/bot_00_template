@@ -289,10 +289,6 @@ async def process_wish_news_press(callback: CallbackQuery, state: FSMContext):
     # Добавляем в "базу данных" анкету пользователя
     # по ключу id пользователя
     user_dict[callback.from_user.id] = await state.get_data()
-    debug(user_dict)
-
-    users = await state.get_data()
-    debug(users)
 
     # Завершаем машину состояний, но не удаляем данные из словаря FSMContext
     await state.set_state(None)
@@ -346,5 +342,4 @@ async def process_showdata_command(message: Message, state: FSMContext):
         )
 
     data = await state.get_data()
-    debug(data)
     await message.answer(str(data))

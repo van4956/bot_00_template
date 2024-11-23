@@ -1,10 +1,11 @@
-from icecream import ic as debug
+from icecream import ic
+ic.configureOutput(includeContext=True, prefix=' >>> Debag >>> ')
 
-debug.disable()  # Отключить вывод
-debug.enable()  # Включить вывод
-debug.configureOutput(includeContext=True, prefix=' >>> Debag >>> ')
+ic.disable()  # Отключить вывод
+ic.enable()  # Включить вывод
+
 
 a = 10
 b = 20
 
-debug(a, b, a+b)
+ic(a, b, a+b)

@@ -5,12 +5,10 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.info("Загружен модуль: %s", __name__)
 
-import asyncio
-from aiogram import F, Bot, Dispatcher, types, Router
-from aiogram.enums import ParseMode
-from aiogram.client.default import DefaultBotProperties
+
+from aiogram import F, Bot, Router
 from aiogram.filters import Command
-from aiogram.types import Message, LabeledPrice, ShippingOption, ShippingQuery, PreCheckoutQuery, ContentType
+from aiogram.types import Message, LabeledPrice, ShippingOption, ShippingQuery, PreCheckoutQuery
 from aiogram.utils.i18n import gettext as _
 
 # Инициализируем роутер уровня модуля
@@ -19,9 +17,9 @@ payments_router = Router()
 
 # -----------------------------------------------< тексты >---------------------------------
 
-help_message = lambda: _('Через этого бота можно купить машину времени, чтобы посмотреть, как происходит покупка и оплата в Telegram.\n\n'
+help_message = lambda: _('Через этого бота можно купить "Машину времени", чтобы посмотреть, как происходит покупка и оплата в Telegram.\n\n'
                                             'Отправьте команду /buy, чтобы перейти к покупке.\n\n'
-                                            'Узнать правила и положения - команда /terms_payments.')
+                                            'Правила и положения - /terms_payments.')
 
 start_message = lambda: _('Привет! Это демонстрация работы платежей в Telegram!\n\n') + help_message()
 
@@ -43,7 +41,7 @@ AU_error = lambda: _('К сожалению, наши курьеры боятс�
 wrong_email = lambda: _('Нам кажется, что указанный имейл не действителен.'
                                             'Попробуйте указать другой имейл')
 
-successful_payment = lambda: _('Ура! Платеж на сумму <code>{total_amount} {currency}</code> совершен успешно! Приятного пользования новенькой машиной времени!\n'
+successful_payment = lambda: _('Ура! Платеж на сумму <code>{total_amount} {currency}</code> совершен успешно! Приятного пользования новенькой машиной времени!\n\n'
                                                     'Правила возврата средств смотрите в /terms_payments\n'
                                                         'Купить ещё одну машину времени своему другу - /buy')
 

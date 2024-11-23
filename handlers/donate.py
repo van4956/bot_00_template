@@ -6,9 +6,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.info("Загружен модуль: %s", __name__)
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import Any
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, CallbackQuery, InlineKeyboardButton
@@ -53,7 +55,7 @@ async def cmd_donate_input(callback: CallbackQuery, state: FSMContext):
     data = callback.data.split("_")[1]
 
     if data == 'back':
-        await state.clear()
+        await state.set_state(None)
         await callback.message.edit_text(text=_("Поддержать автора донатом"), reply_markup=None)
         await callback.answer(_('Назад на главную'))
         await asyncio.sleep(1)
@@ -132,7 +134,8 @@ async def on_donate_cancel(callback: CallbackQuery, state: FSMContext):
     await state.update_data(donate_amount=None)
     await callback.message.answer(_('Главная панель'), reply_markup=keyboard.start_keyboard())
 
-@donate_router.message(Command('refund'))
+# Обработка команды возврата доната (без ограничения по времени)
+@donate_router.message(Command('refundd'))
 async def command_refund_handler(message: Message, bot: Bot, command: CommandObject) -> None:
     transaction_id = command.args if command.args else ''
     user_id = message.from_user.id
@@ -140,6 +143,50 @@ async def command_refund_handler(message: Message, bot: Bot, command: CommandObj
         await bot.refund_star_payment(user_id=user_id, telegram_payment_charge_id=transaction_id)
     except Exception as e:
         logger.error("Ошибка: %s", str(e))
+
+# Обработка команды возврата доната (с ограничением по времени)
+@donate_router.message(Command("refund"))
+async def cmd_refund(message: Message, bot: Bot, command: CommandObject, state: FSMContext):
+    # ID транзакции для возврата средств
+    t_id = command.args
+    # Проверяем, указан ли ID транзакции
+    if t_id is None:
+        await message.answer(_("Пожалуйста, укажите идентификатор транзакции в формате <code>/refund [id]</code>, "
+                                "где <code>[id]</code> это идентификатор транзакции, который вы получили после доната.\n\n"
+                                "/terms - условия использования\n"
+                                "/id_trans - ID транзакции"))
+        return
+    # Проверяем, не истек ли срок возврата
+    try:
+        # Извлекаем временную метку из donate_info
+        data = await state.get_data()
+        donate_info: dict = data.get('donate_info', {})
+        timestamp: Any = donate_info.get(t_id, '')  # получаем временную метку в формате строки, по id транзакции
+        # Парсим строку в объект datetime
+        timestamp = datetime.strptime(timestamp, "%Y-%m-%d-%H-%M-%S")
+        # Получаем текущую дату и время
+        current_time = datetime.now()
+        # Вычисляем разницу во времени
+        time_difference = current_time - timestamp
+        if time_difference > timedelta(days=REFUND_PERIOD_DAYS):
+            await message.answer(_("Срок для возврата средств истек. Возврат возможен только в течение 30 дней после доната."))
+            return
+    # Если не удалось распарсить временную метку, выводим сообщение об ошибке
+    except (ValueError, IndexError) as e:
+        logger.error("Ошибка: %s", str(e))
+        await message.answer(_("Неверный формат идентификатора транзакции."))
+        return
+    # Пытаемся сделать возврат средств
+    try:
+        await bot.refund_star_payment(user_id=message.from_user.id, telegram_payment_charge_id=t_id)
+        await message.answer(_("Рефанд произведен успешно. Потраченные звёзды уже вернулись на ваш счёт в Telegram."))
+    except TelegramBadRequest as e:
+        logger.error("Ошибка: %s", str(e))
+        err_text = _("Транзакция с указанным идентификатором не найдена. Пожалуйста, проверьте введенные данные и повторите ещё раз.")
+        if "CHARGE_ALREADY_REFUNDED" in e.message:
+            err_text = _("Рефанд по этой транзакции уже был ранее произведен.")
+        await message.answer(err_text)
+        return
 
 
 # Проверка перед оплатой, бот должен ответить в течение 10 секунд
@@ -182,9 +229,28 @@ async def on_successfull_payment(message: Message, state: FSMContext, workflow_d
         # 💩 какаха - 5046589136895476101
 
     await state.set_state(None)
-    await state.update_data(donate_amount=None, donate_info=None)
+    await state.update_data(donate_amount=None)
 
     analytics = workflow_data['analytics']
     await analytics(user_id=user_id,
                     category_name="/income",
                     command_name="/donate")
+
+# Отправляем сообщение с инструкциями по поддержке покупок
+@donate_router.message(Command("id_trans"))
+async def cmd_id_trans(message: Message, state: FSMContext):
+    data = await state.get_data()
+    donate_info = data.get('donate_info', {})
+    t_id = max(donate_info, key=donate_info.get) if donate_info else _('ID транзакции не найден')
+    await message.answer(
+        text=_('Чтобы оформить возврат, вам понадобится ID транзакции.\n\nID последней вашей транзакции:\n<code>{t_id}</code>').format(t_id=t_id))
+
+# Отправляем условия использования бота (Terms of Service)
+@donate_router.message(Command("terms"))
+async def cmd_terms(message: Message):
+    await message.answer(_("<b>Условия использования</b>\n\n"
+                            "1. Донаты являются добровольными и могут быть возвращены в течение 30 дней после совершения платежа.\n\n"
+                            "2. Для возврата средств необходимо предоставить идентификатор транзакции. Получить ID транзакции /id_trans\n\n"
+                            "3. После истечения 30 дней возврат средств невозможен.\n\n"
+                            "4. Использование бота подразумевает согласие с данными условиями.\n\n")
+                            )
