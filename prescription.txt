@@ -22,33 +22,31 @@ pip --version
 git --version
 docker --version
 
-7) расширения requirements
+7) скачать и установить расширения requirements
 
 pip install -r requirements.txt
-pip freeze > requirements.txt
 
-pip uninstall <github>
+pip freeze > requirements.txt         - создать файл requirements.txt из зависимостей в env
+pipreqs . --force                     - создать файл requirements.txt из используемых зависимостей проекта
 
+pip uninstall <github>                - удалить определенную зависимость из env
 
-
-8) Redis
+8) если будут проблемы с Redis
 
 установка сервера
 https://stepik.org/lesson/870034/step/3?unit=874212
 
 если будут проблемы, тогда нужно обновить и переустановить пакеты
-
-sudo apt update && sudo apt dist-upgrade
-sudo apt install redis
+sudo apt update && sudo apt dist-upgrade && sudo apt install redis
 
 если не поможет - проверить VPN
 если и это не поможет - в файле main отключить Redis, поменять на MemoryStorage
 
+вообще на локальной машине не должно быть Redis, запускаем только через docker !!!
+
 
 
 9) интернализация gettext
-
-pip install Babel
 
 запускаем процесс сбора всех текстов из нашего проекта и создаем соответствующий файл-шаблон .pot для дальнейшей локализации
 pybabel extract -o locales/messages.pot -k _:1,1t -k _:1,2 --copyright-holder="AdvancedBotTemplate" --project="bot_00_template" --version=0.1 --msgid-bugs-address=gontscharowiwan@yandex.ru --input-dirs=.
