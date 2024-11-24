@@ -120,4 +120,4 @@ celerybeat.pid
 
 # Исключаем файл с содержимым
 bot_00_template_contents.txt
-/bot_00_copilot_contents.txt
+/bot_00_copilot_contents.txt.env*
