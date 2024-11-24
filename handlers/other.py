@@ -8,7 +8,7 @@ logger.info("Загружен модуль: %s", __name__)
 
 from aiogram import Router, F, Bot
 from sqlalchemy.ext.asyncio import AsyncSession
-from aiogram.filters import Command
+from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 from aiogram.utils.i18n import gettext as _
@@ -28,6 +28,7 @@ async def process_help_command(message: Message):
                '/start - перезапустить бота\n'
                '/help - справка по работе бота\n'
                '/lang - сменить язык\n\n'
+               '/llm - языковая модель\n'
                '/product - выборт товаров\n'
                '/payments - оплата товаров\n'
                '/questionnaire - анкетирование\n\n'
@@ -90,3 +91,9 @@ async def update_locale_cmd(callback: CallbackQuery, session: AsyncSession, stat
 async def data_cmd(message: Message, state: FSMContext):
     data = await state.get_data()
     await message.answer(str(data))
+
+# хендлер на команду "Назад на главную ↩️"
+@other_router.message(StateFilter("*"), F.text == "Назад на главную ↩️")
+async def back_cmd(message: Message, state: FSMContext):
+    await state.set_state(None)
+    await message.answer("Бот активирован!", reply_markup=keyboard.start_keyboard())

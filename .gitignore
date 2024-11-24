@@ -119,5 +119,5 @@ celerybeat.pid
 .DS_Store
 
 # Исключаем файл с содержимым
-bot_04_copilot_v2_contents.txt
-/bot_04_copilot_v2_contents.txt
+bot_00_template_contents.txt
+/bot_00_copilot_contents.txt

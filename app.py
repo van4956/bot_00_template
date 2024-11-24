@@ -1,5 +1,5 @@
-# ctrl + B                        -  запуск скрипта из любого файла проекта
-# ctrl + I                        -  варианты эмодзи
+# Режим запуска: docker == 1 - запуск в docker, docker == 0 - запуск локально
+docker = 0
 
 import logging
 
@@ -30,15 +30,11 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 from config_data.config import Config, load_config
 
-from handlers import other, admin, product, group, questionnaire, start, owner, donate, payments
+from handlers import other, admin, product, group, questionnaire, start, owner, donate, payments, llm
 from common.comands import private, admin_private
 from database.models import Base
 from middlewares import counter, db, locale, throttle
 
-
-
-# Режим запуска: docker == 1 - запуск в docker, docker == 0 - запуск локально
-docker = 0
 
 # Загружаем конфиг в переменную config
 config: Config = load_config()
@@ -126,13 +122,14 @@ dp.update.middleware(FSMI18nMiddleware(i18n=i18n))  # получяем язык 
 dp.include_router(start.start_router)
 dp.include_router(owner.owner_router)
 dp.include_router(admin.admin_router)
+dp.include_router(other.other_router)
+
 dp.include_router(donate.donate_router)
 dp.include_router(product.product_router)
 dp.include_router(payments.payments_router)
+dp.include_router(llm.llm_router)
 dp.include_router(group.group_router)
 dp.include_router(questionnaire.questionnaire_router)
-
-dp.include_router(other.other_router)
 
 
 # Типы апдейтов которые будем отлавливать ботом

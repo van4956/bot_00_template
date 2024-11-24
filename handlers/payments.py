@@ -10,7 +10,7 @@ from aiogram import F, Bot, Router
 from aiogram.filters import Command
 from aiogram.types import Message, LabeledPrice, ShippingOption, ShippingQuery, PreCheckoutQuery
 from aiogram.utils.i18n import gettext as _
-
+from config_data.config import load_config
 # Инициализируем роутер уровня модуля
 payments_router = Router()
 
@@ -48,10 +48,8 @@ successful_payment = lambda: _('Ура! Платеж на сумму <code>{tota
 # --------------------------------------------------------------------------------
 
 
-
 TIME_MACHINE_IMAGE_URL = 'http://erkelzaar.tsudao.com/models/perrotta/TIME_MACHINE.jpg'
-
-PAYMASTER_PROVIDER_TOKEN = '1744374395:TEST:91f0953d6a84fd73f0a9'
+PAYMASTER_PROVIDER_TOKEN = load_config().tg_bot.paymaster_token
 CURRENCY = 'RUB'
 
 

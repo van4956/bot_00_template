@@ -19,15 +19,11 @@ services:
           memory: 128M
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
-      - BOT_TOKEN_2=${BOT_TOKEN_2}
       - OWNER=${OWNER}
       - ADMIN_LIST=${ADMIN_LIST}
       - HOME_GROUP=${HOME_GROUP}
       - WORK_GROUP=${WORK_GROUP}
       - PAYMASTER_PROVIDER_TOKEN=${PAYMASTER_PROVIDER_TOKEN}
-      - API_GPT=${API_GPT}
-      - API_WEATHER=${API_WEATHER}
-      - API_CURRENCY=${API_CURRENCY}
       - DB_POST=${DB_POST}
       - DB_LITE=${DB_LITE}
       - POSTGRES_DB=${POSTGRES_DB}
